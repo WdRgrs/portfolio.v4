@@ -12,6 +12,7 @@
     @include laptop {
       --max-width: 100vw;
     }
+    
     --max-content-width: 1000px;
     @include mobile {
       --max-content-width: 100vw;
