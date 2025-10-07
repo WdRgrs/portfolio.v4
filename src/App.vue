@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app" id="top">
     <header class="app__navbar" :inert="isLanding || undefined">
       <NavBar v-show="!isLanding" />
     </header>
@@ -34,7 +34,6 @@ const isLanding = computed(() => {
 <style scoped lang="scss">
 .app {
   height: 100dvh;
-  overflow-y: auto;
 
   &__navbar {
     height: var(--nav-bar-height);
