@@ -1,7 +1,7 @@
 <template>
   <div class="resume-section">
-    Curriculum Vitae
-    <button class="btn btn-accent btn-glow" @click="handlePreview">{{ btnText }}</button>
+    Curriculum vitae
+    <button class="btn btn-accent btn-glow" @click="handlePreview">Preview</button>
     
     <div v-if="showPreview" class="resume-modal" @click.self="closePreview">
       <div class="resume-modal__container">
@@ -37,14 +37,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useScrollLock } from '@/composables/useScrollLock'
 
 const showPreview = ref(false)
 const isMobile = ref(false)
 const pageCount = 2
 
-const btnText = computed(() => showPreview.value ? 'Close' : 'Preview')
 
 const pdfSrc = computed(() => {
   const params = new URLSearchParams({
@@ -72,9 +71,22 @@ useScrollLock(showPreview)
 </script>
 
 <style scoped lang="scss">
-.btn {
-  padding: var(--space-1) var(--space-2);
-  margin-left: var(--space-2);
+.resume-section{
+  color: var(--color-olive);
+  font-family: var(--font-poppins);
+
+  & .btn {
+    font-family: var(--font-poppins);
+    font-weight: var(--font-semibold);
+    padding: var(--space-1) var(--space-2);
+    margin-left: var(--space-2);
+    background: linear-gradient(
+      0.33turn,
+      var(--color-primary) 0% 30%,
+      var(--color-info) 50%,
+      var(--color-accent) 70% 100%
+    );
+  }
 }
 .resume-modal {
   position: fixed;
