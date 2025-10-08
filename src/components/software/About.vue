@@ -12,7 +12,7 @@
           aria-label="Toggle summary view"
         >
           <span>TL;DR</span>
-          <span>:)</span>
+          <span>:</span>
         </button>
       </h2>
     </template>
@@ -344,6 +344,16 @@ const displayContent = computed(() => {
       transform: rotateX(90deg);
       box-shadow: inset 0px 0px 0px 2px var(--color-text-secondary);
       background-color: var(--color-surface-1);
+
+      &::after {
+        content: (")");
+      }
+      
+      &:hover {
+        &::after {
+          content: ("P");
+        }
+      }
     }
 
     &.btn--active span:nth-child(1) {

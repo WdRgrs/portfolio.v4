@@ -240,7 +240,7 @@ function buildCode(): string {
       transform: translate(0, 0) scale(0);
       filter: brightness(0) saturate(0) contrast(0);
     }
-    15% {
+    12% {
       opacity: 1;
       transform: translate(0, 0) scale(1.2);
       filter: brightness(1.2) saturate(1.8) contrast(2);
