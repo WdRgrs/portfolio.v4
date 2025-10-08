@@ -10,14 +10,12 @@
         @load="handleImageLoad"
       />
       
-      <!-- Overlay gradient for text readability -->
-      <div class="weld-hero__overlay"></div>
+      <!-- <div class="weld-hero__overlay"></div> -->
       
-      <!-- Animated spark effect (optional) -->
-      <div class="weld-hero__sparks" v-if="showSparks">
+      <div class="weld-hero__sparks" >
         <span 
-          v-for="n in 12" 
-          :key="n" 
+          v-for="n in 24" 
+          :key="`spark-${n}`" 
           class="weld-hero__spark"
           :style="{ animationDelay: `${n * 0.15}s` }"
         ></span>
@@ -59,12 +57,7 @@ interface Quote {
   author?: string
 }
 
-const props = withDefaults(defineProps<{
-  quote?: Quote
-  showSparks?: boolean
-}>(), {
-  showSparks: true
-})
+const props = defineProps<{ quote?: Quote }>()
 
 const isImageLoaded = ref(false)
 
@@ -158,7 +151,7 @@ const handleImageLoad = () => {
     animation: sparkFly 3s ease-out infinite;
 
     // Random starting positions
-    @for $i from 1 through 12 {
+    @for $i from 1 through 24 {
       &:nth-child(#{$i}) {
         left: math.random(100) * 1%;
         top: math.random(100) * 1%;
@@ -173,13 +166,13 @@ const handleImageLoad = () => {
     }
     10% {
       opacity: 1;
-      transform: translate(0, 0) scale(1);
+      transform: translate(0, 0) scale(1.3);
     }
     100% {
       opacity: 0;
       transform: translate(
-        #{math.random(200) - 100}px, 
-        #{math.random(200) - 100}px
+        #{math.random(100) + 50}px, 
+        #{math.random(100) + 100}px
       ) scale(0);
     }
   }
@@ -313,16 +306,13 @@ const handleImageLoad = () => {
 // Respect reduced motion
 @media (prefers-reduced-motion: reduce) {
   .weld-hero {
-    &__image {
+    &__image,
+    &__scroll-indicator {
       animation: none;
     }
 
     &__sparks {
       display: none;
-    }
-
-    &__scroll-indicator {
-      animation: none;
     }
   }
 }

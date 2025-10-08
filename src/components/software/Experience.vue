@@ -5,12 +5,20 @@
     </template>
 
     <div class="experience__container">
+      <div class="experience__particles left">
+        <span 
+          v-for="n in 100" 
+          :key="n" 
+          class="experience__particle"
+          :class="{'experience__track--paused': isPaused}"
+          :style="{ animationDelay: `${n * 0.05}s` }"
+        ></span>
+      </div>
+
       <!-- Bottom layer: Full width code blocks -->
       <div class="experience__layer experience__layer--code">
         <div class="experience__stream" @mouseenter="pauseAll" @mouseleave="resumeAll">
-
           <div ref="codeTrackRef" class="experience__track" :class="{'experience__track--paused': isPaused}">
-
             <div
               v-for="(job, i) in duplicatedJobs"
               :key="`code-${job.company}-${i}`"
@@ -57,7 +65,18 @@
         </div>
       </Transition>
 
-      <!-- Resume -->
+      <div class="experience__particles right">
+        <span 
+          v-for="n in 100" 
+          :key="n" 
+          class="experience__particle"
+          :class="{'experience__track--paused': isPaused}"
+          :style="{ animationDelay: `${n * 0.05}s` }"
+        ></span>
+      </div>
+    </div>
+    
+    <div class="experience__container">
       <Resume class="experience__resume" />
     </div>
   </PageSection>
@@ -123,21 +142,23 @@ function buildCode(): string {
 </script>
 
 <style scoped lang="scss">
+@use "sass:math";
+
 .experience {
   --mask-card: linear-gradient(
-      90deg,
-      transparent 11%,
-      black 15%,
-      black 85%,
-      transparent 89%
-    );
+    90deg,
+    transparent 11%,
+    black 15%,
+    black 85%,
+    transparent 89%
+  );
   --mask-code: linear-gradient(
-      90deg, 
-      transparent 0%, 
-      black 3%, 
-      black 97%, 
-      transparent 100%
-    );
+    90deg, 
+    transparent 0%, 
+    black 3%, 
+    black 97%, 
+    transparent 100%
+  );
   @include mobile {
     --mask-code: none;
   }
@@ -152,7 +173,84 @@ function buildCode(): string {
     flex-direction: column;
     align-items: center;
   }
-  
+    
+  &__particles {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    
+    &.left {
+      left: 13%;
+    }
+    
+    &.right {
+      right: 12%;
+    }
+  }
+
+  &__particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 
+      0 0 4px var(--color-secondary),
+      0 0 8px var(--color-accent);
+    opacity: 0;
+    animation: particleFloat 5s ease-out infinite;
+
+    @for $i from 1 through 100 {
+      &:nth-child(#{$i}) {
+        top: math.random(100) * 1%;
+
+        @if $i % 30 == 0 {
+          background: var(--color-burgundy);
+          box-shadow: 
+            0 0 4px var(--color-peach), 
+            0 0 8px var(--color-pink);
+        } @else if $i % 20 == 0 {
+          background: var(--color-secondary);
+          box-shadow: 
+            0 0 4px var(--color-success), 
+            0 0 8px var(--color-warning);
+        }
+      }
+    }
+
+    .left & {
+      left: 0;
+    }
+    
+    .right & {
+      right: 0;
+    }
+  }
+
+  @keyframes particleFloat {
+    0% {
+      opacity: 0;
+      transform: translate(0, 0) scale(0);
+      filter: brightness(1) saturate(1) contrast(1);
+    }
+    15% {
+      opacity: 1;
+      transform: translate(0, 0) scale(1.2);
+      filter: brightness(1.2) saturate(1.8) contrast(2);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-150px, 0) scale(0);
+      filter: brightness(.5) saturate(.5) contrast(.5);
+    }
+  }
+  @include mobile {
+
+  }
+
   &__layer {
     position: relative;
     width: 100%;
@@ -169,7 +267,6 @@ function buildCode(): string {
       
     &--cards {
       position: absolute;
-
       -webkit-mask-image: var(--mask-card);
       mask-image: var(--mask-card);
     }
@@ -187,6 +284,7 @@ function buildCode(): string {
     gap: var(--exp-gap);
     animation: expScroll 30s linear infinite;
     will-change: transform;
+    
     &--paused {
       animation-play-state: paused;
     }
@@ -194,17 +292,16 @@ function buildCode(): string {
 
   @keyframes expScroll {
     0% {
-      transform:  translateX(0%);
+      transform: translateX(0%);
     }
     100% {
-      /* 3 copies = 33% movement - .8 seems to be the magic number for no hickup */
-      transform:  translateX(calc(-33.8%));
+      transform: translateX(-33.8%);
     }
   }
 
   &__cell {
     flex: 0 0 var(--exp-card-width);
-    height: calc(var(--exp-card-height));
+    height: var(--exp-card-height);
     display: grid;
     place-items: center;
   }
@@ -323,7 +420,7 @@ function buildCode(): string {
         height: 10dvh;
       }
 
-      &__btn{
+      &__btn {
         width: 90px;
         border-radius: var(--radius-md);
         border: 1px solid var(--color-border);
@@ -358,6 +455,19 @@ function buildCode(): string {
   .modal-enter-to, .modal-leave-from {
     backdrop-filter: blur(2px) contrast(90%) brightness(50%);
     opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .experience {
+    &__track,
+    &__full-card {
+      animation: none;
+    }
+
+    &__particles {
+      display: none;
+    }
   }
 }
 </style>
