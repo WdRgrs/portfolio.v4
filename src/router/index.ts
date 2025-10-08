@@ -25,7 +25,7 @@ const router = createRouter({
       name: 'landing',
       component: Landing,
       meta: {
-        title: 'Wade Rogers',
+        title: '𝙒𝙖𝙙𝙚 𝙍𝙤𝙜𝙚𝙧𝙨',
         description: 'Full-stack developer with 3+ years experience. View my software engineering portfolio, welding projects, and photography.'
       }
     },
@@ -34,7 +34,8 @@ const router = createRouter({
       component: Software,
       name: 'software',
       meta: {
-        title: 'WR | Software',
+        // title: '𝗦𝗼𝗳𝘁𝘄𝗮𝗿𝗲',
+        title: '𝑺𝒐𝒇𝒕𝒘𝒂𝒓𝒆',
         description: 'Full-stack software development portfolio featuring Vue.js, TypeScript, and real-time applications.'
       }
     },
@@ -43,7 +44,7 @@ const router = createRouter({
       component: Welding,
       name: 'welding',
       meta: {
-        title: 'WR | Welding',
+        title: '𝑾𝒆𝒍𝒅𝒊𝒏𝒈',
         description: 'Welding stories and project highlights.'
       } 
     },
@@ -52,16 +53,7 @@ const router = createRouter({
       name: 'photography',
       component: Photography,
       meta: {
-        title: 'WR | Photography',
-        description: 'Photography portfolio and visual storytelling.'
-      } 
-    },
-    { 
-      path: DEV_LOG, 
-      component: DevLog,
-      name: 'dev-log',
-      meta: {
-        title: 'WR | Photography',
+        title: '𝑷𝒉𝒐𝒕𝒐𝒈𝒓𝒂𝒑𝒉𝒚',
         description: 'Photography portfolio and visual storytelling.'
       } 
     },
