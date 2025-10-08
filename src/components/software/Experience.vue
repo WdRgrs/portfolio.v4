@@ -17,12 +17,14 @@
 
       <!-- Bottom layer: Full width code blocks -->
       <div class="experience__layer experience__layer--code">
-        <div class="experience__stream" @mouseenter="pauseAll" @mouseleave="resumeAll">
-          <div ref="codeTrackRef" class="experience__track" :class="{'experience__track--paused': isPaused}">
+        <div class="experience__stream" >
+          <div ref="codeTrackRef" class="experience__track" :class="{'experience__track--paused': isPaused}" >
             <div
               v-for="(job, i) in duplicatedJobs"
               :key="`code-${job.company}-${i}`"
               class="experience__cell"
+              @mouseenter="pauseAll" 
+              @mouseleave="resumeAll"
             >
               <div class="experience__code">{{ buildCode() }}</div>
             </div>
@@ -32,12 +34,14 @@
 
       <!-- Top layer: Narrower cards container -->
       <div class="experience__layer experience__layer--cards">
-        <div class="experience__stream" @mouseenter="pauseAll" @mouseleave="resumeAll">
-          <div ref="cardTrackRef" class="experience__track" :class="{'experience__track--paused': isPaused}">
+        <div class="experience__stream">
+          <div ref="cardTrackRef" class="experience__track" :class="{'experience__track--paused': isPaused}" >
             <div
               v-for="(job, i) in duplicatedJobs"
               :key="`card-${job.company}-${i}`"
               class="experience__cell"
+              @mouseenter="pauseAll" 
+              @mouseleave="resumeAll"
             >
               <ExperienceCard
                 class="experience__card"
