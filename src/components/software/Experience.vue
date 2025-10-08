@@ -238,7 +238,7 @@ function buildCode(): string {
     0% {
       opacity: 0;
       transform: translate(0, 0) scale(0);
-      filter: brightness(1) saturate(1) contrast(1);
+      filter: brightness(0) saturate(0) contrast(0);
     }
     15% {
       opacity: 1;
