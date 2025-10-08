@@ -30,18 +30,20 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import PageSection from '@/components/page/Section.vue'
 
 const isTldr = ref(false)
+const showTldr = ref(false)
+const activeGlowIndex = ref(-1)
+const paragraphWords = ref<string[][]>([])
+const animationTimers = ref<number[]>([])
+const glowSequenceTimer = ref<number | null>(null)
+
+const ANIMATION_DURATION = 1000
+const GLOW_INTERVAL = 1200
 
 const paragraphSources = [
   `Hi! I'm Wade, [passionate] about building |things| and fueled by a [curious] tic to understand how and why they work.`,
-  
-  `My tech story begins as a [PC enthusiast] in the 56k dial-up era, when 128MB of RAM was luxurious and "your system is running low on virtual memory" was a daily notification. 
-  This early fascination led me to build PCs and eventually to code, turning curiosity into a career.`,
-  
-  `Professionally, I work full-stack but gravitate toward the frontend, a medium for expression as much as a technology. 
-  The mentor side of me enjoys [crafting] [experiences] that connect people to [ideas] in clear and engaging ways.`,
-  
-  `I'm energized by [innovation] in every form, and especially [inspired] by spatial computing. 
-  I dream of one day stepping into the metaverse, as imagined by Neal Stephenson; we're laying the groundwork today for tomorrow's technologies.`
+  `My tech story begins as a [PC enthusiast] in the 56k dial-up era, when 128MB of RAM was luxurious and "your system is running low on virtual memory" was a daily notification. This early fascination led me to build PCs and eventually to code, turning curiosity into a career.`,
+  `Professionally, I work full-stack but gravitate toward the frontend, a medium for expression as much as a technology. The mentor side of me enjoys [crafting] [experiences] that connect people to [ideas] in clear and engaging ways.`,
+  `I'm energized by [innovation] in every form, and especially [inspired] by spatial computing. I dream of one day stepping into the metaverse, as imagined by Neal Stephenson; we're laying the groundwork today for tomorrow's technologies.`
 ]
 
 const tldrPhrases = [
@@ -51,12 +53,6 @@ const tldrPhrases = [
   `[inspired] by [innovation] ..`
 ]
 
-const paragraphWords = ref<string[][]>([])
-const animationTimers = ref<number[]>([])
-const glowSequenceTimer = ref<number | null>(null)
-const activeGlowIndex = ref<number>(-1)
-const showTldr = ref(false)
-
 onMounted(() => {
   resetContent()
 })
@@ -65,7 +61,7 @@ onUnmounted(() => {
   clearAllTimers()
 })
 
-const toggleTldr = () => {
+function toggleTldr() {
   if (!isTldr.value) {
     isTldr.value = true
     startTldrAnimation()
@@ -73,7 +69,7 @@ const toggleTldr = () => {
     isTldr.value = false
     showTldr.value = false
     activeGlowIndex.value = -1
-    resetContent()
+    startExpandAnimation()
   }
 }
 
@@ -83,27 +79,27 @@ function resetContent() {
 }
 
 function clearAllTimers() {
-  animationTimers.value.forEach(timer => clearInterval(timer))
+  animationTimers.value.forEach(clearInterval)
   animationTimers.value = []
+  
   if (glowSequenceTimer.value) {
     clearInterval(glowSequenceTimer.value)
+    glowSequenceTimer.value = null
   }
-  glowSequenceTimer.value = null
+}
+
+function isHighlighted(word: string): boolean {
+  return word.includes('[') || word.includes(']')
 }
 
 function startTldrAnimation() {
   clearAllTimers()
 
-  // Animate word removal
   paragraphWords.value.forEach((words, paragraphIndex) => {
-    const baseTime = 1000
-    const targetDuration = baseTime
     const wordsToRemove = words.filter(w => !isHighlighted(w)).length
-
     if (wordsToRemove === 0) return
 
-    const interval = targetDuration / wordsToRemove
-
+    const interval = ANIMATION_DURATION / wordsToRemove
     const timer = window.setInterval(() => {
       removeNextNonHighlightedWord(paragraphIndex)
     }, interval)
@@ -111,15 +107,52 @@ function startTldrAnimation() {
     animationTimers.value.push(timer)
   })
 
-  // After animation completes, show TL;DR and start glow
   setTimeout(() => {
     showTldr.value = true
     startGlowSequence()
-  }, 1000)
+  }, ANIMATION_DURATION)
 }
 
-function isHighlighted(word: string): boolean {
-  return word.includes('[') || word.includes(']')
+function startExpandAnimation() {
+  clearAllTimers()
+  
+  const fullSources = paragraphSources.map(src => src.split(' '))
+  
+  fullSources.forEach((fullWords, paragraphIndex) => {
+    const wordsToAdd = fullWords.filter(w => !isHighlighted(w))
+    
+    if (wordsToAdd.length === 0) {
+      paragraphWords.value[paragraphIndex] = fullWords
+      return
+    }
+    
+    const interval = ANIMATION_DURATION / wordsToAdd.length
+    let progress = 0
+    
+    const timer = window.setInterval(() => {
+      const result: string[] = []
+      let nonHighlightedAdded = 0
+      
+      fullWords.forEach(word => {
+        if (isHighlighted(word)) {
+          result.push(word)
+        } else if (nonHighlightedAdded < progress) {
+          result.push(word)
+          nonHighlightedAdded++
+        }
+      })
+      
+      paragraphWords.value[paragraphIndex] = result
+      progress++
+      
+      if (progress > wordsToAdd.length) {
+        clearInterval(timer)
+        paragraphWords.value[paragraphIndex] = fullWords
+      }
+    }, interval)
+    
+    animationTimers.value.push(timer)
+  })
 }
 
 function removeNextNonHighlightedWord(paragraphIndex: number) {
@@ -130,17 +163,15 @@ function removeNextNonHighlightedWord(paragraphIndex: number) {
     const newWords = [...words]
     newWords.splice(indexToRemove, 1)
     paragraphWords.value[paragraphIndex] = newWords
-  } else {
-    if (animationTimers.value[paragraphIndex]) {
-      clearInterval(animationTimers.value[paragraphIndex])
-    }
+  } else if (animationTimers.value[paragraphIndex]) {
+    clearInterval(animationTimers.value[paragraphIndex])
   }
 }
 
 function startGlowSequence() {
   const totalHighlights = tldrPhrases.reduce((count, phrase) => {
     const matches = phrase.match(/\[([^\]]+)\]/g)
-    return count + (matches ? matches.length : 0)
+    return count + (matches?.length ?? 0)
   }, 0)
 
   if (totalHighlights === 0) return
@@ -152,9 +183,8 @@ function startGlowSequence() {
     currentHighlight = (currentHighlight + 1) % totalHighlights
   }
 
-  // immediate & cycle
   cycleGlow()
-  glowSequenceTimer.value = window.setInterval(cycleGlow, 1200)
+  glowSequenceTimer.value = window.setInterval(cycleGlow, GLOW_INTERVAL)
 }
 
 function processWordsForDisplay(words: string[]): string {
@@ -164,7 +194,7 @@ function processWordsForDisplay(words: string[]): string {
       return `<span class="highlight">${cleanWord}</span>`
     }
     if (word.includes('|')) {
-      const cleanWord = word.replace(/[\|]/g, '')
+      const cleanWord = word.replace(/\|/g, '')
       return `<span style="font-style: italic;">${cleanWord}</span>`
     }
     return word
@@ -174,9 +204,10 @@ function processWordsForDisplay(words: string[]): string {
 function processTldrForDisplay(phrase: string, paragraphIndex: number): string {
   let localIndex = 0
   let globalOffset = 0
+  
   for (let i = 0; i < paragraphIndex; i++) {
     const matches = tldrPhrases[i].match(/\[([^\]]+)\]/g)
-    globalOffset += matches ? matches.length : 0
+    globalOffset += matches?.length ?? 0
   }
 
   return phrase.replace(/\[([^\]]+)\]/g, (match, word) => {
@@ -189,11 +220,9 @@ function processTldrForDisplay(phrase: string, paragraphIndex: number): string {
 
 const displayContent = computed(() => {
   if (showTldr.value) {
-    // TL;DR phrases
     return tldrPhrases.map((phrase, idx) => processTldrForDisplay(phrase, idx))
-  } else {
-    return paragraphWords.value.map(words => processWordsForDisplay(words))
   }
+  return paragraphWords.value.map(words => processWordsForDisplay(words))
 })
 </script>
 
