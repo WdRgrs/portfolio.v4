@@ -1,6 +1,9 @@
+export type AspectRatio = '16:9' | '3:4' | '1:1' | '21:9' | 'auto'
+export type ObjectFit = 'cover' | 'contain' | 'fill' | 'none' | 'scale-down'
+
 export interface BaseAsset {
   id: string
-  path: string
+  path: string // Relative to public/assets/
   alt: string
   title?: string
   description?: string
@@ -12,21 +15,31 @@ export interface ImageAsset extends BaseAsset {
   type: 'image'
   width?: number
   height?: number
+  aspectRatio?: AspectRatio
   placeholder?: string
 }
 
 export interface VideoAsset extends BaseAsset {
   type: 'video'
-  poster?: string
+  poster?: string // Path to poster image
   duration?: number
+  width?: number
+  height?: number
+  aspectRatio?: AspectRatio
+}
+
+export interface LogoAsset extends BaseAsset {
+  type: 'logo'
+  format: 'svg' | 'webp' | 'png'
   width?: number
   height?: number
 }
 
-export type Asset = ImageAsset | VideoAsset
+export type Asset = ImageAsset | VideoAsset | LogoAsset
 
 export interface AssetCollection {
   section: 'software' | 'welding' | 'photography'
   images: ImageAsset[]
   videos: VideoAsset[]
+  logos: LogoAsset[]
 }

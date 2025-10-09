@@ -15,7 +15,7 @@ export interface RepoStats {
   files: number
   stars: number
   forks: number
-  size: number // KB - TODO - format
+  size: number // KB
   createdAt: string
   updatedAt: string
 }
@@ -29,128 +29,134 @@ interface RepoContributions {
   [repoId: string]: CachedStats
 }
 
+// Narrow type for contributor stats
+type ContributorWeek = { w: number; a: number; d: number; c: number }
+type ContributorEntry = { author: { login: string }; weeks: ContributorWeek[] }
+
+const isBrowser = typeof window !== 'undefined' && typeof localStorage !== 'undefined'
+const isDev = import.meta.env.DEV
+
+const log = {
+  info: (...args: any[]) => { if (isDev) console.info('[github]', ...args) },
+  warn: (...args: any[]) => { if (isDev) console.warn('[github]', ...args) },
+  error: (...args: any[]) => { console.error('[github]', ...args) },
+}
+
 export const useGitHubStore = defineStore('github', () => {
+  let warned = false // verifies github token
   const contributions = ref<RepoContributions>({})
   const loading = ref<Record<string, boolean>>({})
   const errors = ref<Record<string, string>>({})
 
-  // Load from localStorage 
-  function loadCache() {
+  // Track in-flight fetches per repoId to avoid duplicate requests
+  const inflight = new Map<string, Promise<RepoStats>>()
+
+  function parseCache(raw: string | null): RepoContributions | null {
+    if (!raw) return null
     try {
-      const cached = localStorage.getItem(CACHE_KEY)
-      if (cached) {
-        contributions.value = JSON.parse(cached)
-        console.info('Loaded GitHub cache from localStorage')
+      const parsed = JSON.parse(raw)
+
+      if (parsed && typeof parsed === 'object') {
+        return parsed as RepoContributions
       }
-    } catch (error) {
-      console.error('Failed to load GitHub cache:', error)
-      localStorage.removeItem(CACHE_KEY)
+    } catch {
+      // fall through to clear
+    }
+    return null
+  }
+
+  function loadCache() {
+    if (!isBrowser) return
+    const cached = parseCache(localStorage.getItem(CACHE_KEY))
+    if (cached) {
+      contributions.value = cached
+      log.info('cache loaded')
+    } else {
+      // Strip bad cache if any
+      try { localStorage.removeItem(CACHE_KEY) } catch {}
     }
   }
 
-  // Save to localStorage
   function saveCache() {
+    if (!isBrowser) return
     try {
       localStorage.setItem(CACHE_KEY, JSON.stringify(contributions.value))
     } catch (error) {
-      console.error('Failed to save GitHub cache:', error)
+      log.error('cache save failed', error)
     }
   }
 
-  // Initialize cache on store creation
   loadCache()
 
-  // Getters
   const getRepoStats = computed(() => {
     return (repoId: string): RepoStats | undefined => {
       const cached = contributions.value[repoId]
       if (!cached) return undefined
-      
       const isExpired = Date.now() - cached.timestamp > CACHE_DURATION
       if (isExpired && import.meta.env.PROD) {
-        console.warn(`⚠️ Cache expired for ${repoId}`)
+        log.warn(`cache expired ${repoId}`)
       }
-      
       return cached.data
     }
   })
 
   const isLoading = computed(() => {
-    return (repoId: string): boolean => {
-      return loading.value[repoId] || false
-    }
+    return (repoId: string): boolean => loading.value[repoId] || false
   })
 
   const hasError = computed(() => {
-    return (repoId: string): string | undefined => {
-      return errors.value[repoId] || undefined
-    }
+    return (repoId: string): string | undefined => errors.value[repoId] || undefined
   })
 
   const isCached = computed(() => {
     return (repoId: string): boolean => {
       const cached = contributions.value[repoId]
       if (!cached) return false
-      
-      const isExpired = Date.now() - cached.timestamp > CACHE_DURATION
-      return !isExpired
+      return Date.now() - cached.timestamp <= CACHE_DURATION
     }
   })
 
-  // Check if token is available
-  const hasToken = computed(() => {
-    return !!import.meta.env.VITE_GITHUB_TOKEN
-  })
+  const hasToken = computed(() => !!import.meta.env.VITE_GITHUB_TOKEN)
 
-  // get auth headers
+  // Memo-friendly headers. Keep dynamic read of token in case env is injected at runtime.
   function getAuthHeaders(): HeadersInit {
     const headers: HeadersInit = {
-      'Accept': 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28'
+      Accept: 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
     }
-
     const token = import.meta.env.VITE_GITHUB_TOKEN
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`
-      if (import.meta.env.DEV) {
-        console.info('Using GitHub token for authenticated requests')
-      }
-    } else if (import.meta.env.DEV) {
-      console.warn('No GitHub token found - rate limited to 60 requests/hour')
-      console.info('Add VITE_GITHUB_TOKEN to .env for higher limits')
-      console.info('Get token: https://github.com/settings/tokens')
+      headers.Authorization = `Bearer ${token}`
+    } else if (isDev) {
+      // One concise reminder in dev on demand from callers
+      // Avoid repeating multiple lines every request
+      // Consumers can inspect `hasToken` if they care
     }
-
     return headers
   }
 
-  // Fetch repo metadata (stars, forks, size, dates)
   async function fetchRepoMetadata(owner: string, repo: string) {
-    const response = await fetch(
-      `${GITHUB_API}/repos/${owner}/${repo}`,
-      { headers: getAuthHeaders() }
-    )
-
+    const response = await fetch(`${GITHUB_API}/repos/${owner}/${repo}`, {
+      headers: getAuthHeaders(),
+    })
     if (!response.ok) {
-      throw new Error(`Failed to fetch repo metadata: ${response.status}`)
+      throw new Error(`repo metadata ${response.status}`)
     }
-
     const data = await response.json()
     return {
-      stars: data.stargazers_count,
-      forks: data.forks_count,
-      size: data.size,
-      createdAt: data.created_at,
-      updatedAt: data.updated_at
+      stars: data.stargazers_count as number,
+      forks: data.forks_count as number,
+      size: data.size as number,
+      createdAt: data.created_at as string,
+      updatedAt: data.updated_at as string,
     }
   }
 
-  // Fetch contributor stats (commits, additions, deletions, files)
   async function fetchContributorStats(
-    owner: string, 
-    repo: string, 
+    owner: string,
+    repo: string,
     maxRetries = MAX_RETRIES
-  ): Promise<any> {
+  ): Promise<ContributorEntry[]> {
     for (let attempt = 0; attempt < maxRetries; attempt++) {
       const response = await fetch(
         `${GITHUB_API}/repos/${owner}/${repo}/stats/contributors`,
@@ -158,111 +164,107 @@ export const useGitHubStore = defineStore('github', () => {
       )
 
       if (response.status === 202) {
-        // Stats are being computed, wait and retry
         if (attempt < maxRetries - 1) {
-          console.info(`GitHub computing stats for ${owner}/${repo}, retrying...`)
-          await new Promise(resolve => setTimeout(resolve, RETRY_DELAY))
+          log.info(`stats computing ${owner}/${repo}, retry ${attempt + 1}`)
+          await new Promise(r => setTimeout(r, RETRY_DELAY))
           continue
         }
-        throw new Error('GitHub stats still computing after max retries')
+        throw new Error('stats computing timeout')
       }
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch contributor stats: ${response.status}`)
+        throw new Error(`contrib stats ${response.status}`)
       }
 
-      return await response.json()
+      return (await response.json()) as ContributorEntry[]
     }
-
-    throw new Error('Max retries exceeded for contributor stats')
+    throw new Error('max retries reached')
   }
 
-  // Main fetch function
   async function fetchRepoStats(
-    repoId: string, 
-    owner: string, 
+    repoId: string,
+    owner: string,
     repo: string,
     forceRefresh = false
-  ) {
-    // Check cache first
+  ): Promise<RepoStats> {
+    if (!hasToken.value && !warned) {
+      log.warn('No VITE_GITHUB_TOKEN - rate limited to 60 req/hr')
+      log.info('Get token: https://github.com/settings/tokens')
+      warned = true
+    }
+    // Use cache unless forced
     if (!forceRefresh && isCached.value(repoId)) {
-      console.info(`Using cached stats for ${repoId}`)
+      log.info(`cache hit ${repoId}`)
       return contributions.value[repoId].data
     }
+
+    // De-dupe in-flight calls per repoId
+    const existing = inflight.get(repoId)
+    if (existing && !forceRefresh) return existing
 
     loading.value[repoId] = true
     errors.value[repoId] = ''
 
-    try {
-      console.info(`Fetching stats for ${repoId}...`)
+    const task = (async (): Promise<RepoStats> => {
+      try {
+        log.info(`fetch start ${repoId}`)
+        const [metadata, contributorData] = await Promise.all([
+          fetchRepoMetadata(owner, repo),
+          fetchContributorStats(owner, repo),
+        ])
 
-      // Fetch both metadata and contributor stats in parallel
-      const [metadata, contributorData] = await Promise.all([
-        fetchRepoMetadata(owner, repo),
-        fetchContributorStats(owner, repo)
-      ])
+        const ownerStats = contributorData.find(e => e.author?.login === owner)
+        if (!ownerStats) {
+          throw new Error(`no contributions for ${owner}`)
+        }
 
-      // Find the owner's contributions
-      const ownerStats = contributorData.find(
-        (contributor: any) => contributor.author.login === owner
-      )
+        const totals = ownerStats.weeks.reduce(
+          (acc, w) => {
+            acc.commits += w.c
+            acc.additions += w.a
+            acc.deletions += w.d
+            return acc
+          },
+          { commits: 0, additions: 0, deletions: 0 }
+        )
 
-      if (!ownerStats) {
-        throw new Error(`No contributions found for ${owner}`)
+        // Keep your approximation behavior unchanged
+        const filesChangedMax = ownerStats.weeks.reduce(
+          (max, w) => Math.max(max, w.a + w.d),
+          0
+        )
+
+        const stats: RepoStats = {
+          commits: totals.commits,
+          additions: totals.additions,
+          deletions: totals.deletions,
+          files: Math.ceil(filesChangedMax / 10),
+          stars: metadata.stars,
+          forks: metadata.forks,
+          size: metadata.size,
+          createdAt: metadata.createdAt,
+          updatedAt: metadata.updatedAt,
+        }
+
+        contributions.value[repoId] = { data: stats, timestamp: Date.now() }
+        saveCache()
+        log.info(`fetch ok ${repoId}`)
+        return stats
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : 'unknown error'
+        errors.value[repoId] = msg
+        log.error(`fetch error ${repoId}`, err)
+        throw err
+      } finally {
+        loading.value[repoId] = false
+        inflight.delete(repoId)
       }
+    })()
 
-      // Calculate totals from weekly data
-      const totals = ownerStats.weeks.reduce(
-        (acc: any, week: any) => ({
-          commits: acc.commits + week.c,
-          additions: acc.additions + week.a,
-          deletions: acc.deletions + week.d
-        }),
-        { commits: 0, additions: 0, deletions: 0 }
-      )
-
-      // Count unique files changed (this is an approximation)
-      // GitHub doesn't directly provide total files, estimate from weekly data
-      const filesChanged = ownerStats.weeks.reduce(
-        (max: number, week: any) => Math.max(max, week.a + week.d),
-        0
-      )
-
-      // Create stats object
-      const stats: RepoStats = {
-        commits: totals.commits,
-        additions: totals.additions,
-        deletions: totals.deletions,
-        files: Math.ceil(filesChanged / 10), // Rough estimate: changes / avg lines per file
-        stars: metadata.stars,
-        forks: metadata.forks,
-        size: metadata.size,
-        createdAt: metadata.createdAt,
-        updatedAt: metadata.updatedAt
-      }
-
-      // Store with timestamp
-      contributions.value[repoId] = {
-        data: stats,
-        timestamp: Date.now()
-      }
-
-      // Save to localStorage
-      saveCache()
-
-      console.info(`Fetched and cached stats for ${repoId}`)
-      return stats
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-      errors.value[repoId] = errorMessage
-      console.error(`Error fetching stats for ${repoId}:`, error)
-      throw error
-    } finally {
-      loading.value[repoId] = false
-    }
+    inflight.set(repoId, task)
+    return task
   }
 
-  // Clear specific repo stats
   function clearStats(repoId: string) {
     delete contributions.value[repoId]
     delete loading.value[repoId]
@@ -270,74 +272,58 @@ export const useGitHubStore = defineStore('github', () => {
     saveCache()
   }
 
-  // Clear all stats
   function clearAllStats() {
     contributions.value = {}
     loading.value = {}
     errors.value = {}
-    localStorage.removeItem(CACHE_KEY)
-    console.info('Cleared all GitHub stats')
+    if (isBrowser) {
+      try { localStorage.removeItem(CACHE_KEY) } catch {}
+    }
+    log.info('cache cleared')
   }
 
-  // Force refresh specific repo
   async function refreshRepoStats(repoId: string) {
     const [owner, repo] = repoId.split('/')
-    if (!owner || !repo) {
-      throw new Error(`Invalid repoId format: ${repoId}`)
-    }
+    if (!owner || !repo) throw new Error(`invalid repoId ${repoId}`)
     return fetchRepoStats(repoId, owner, repo, true)
   }
 
-  // Dev helpers
-  if (import.meta.env.DEV) {
-    (window as any).__clearGitHubCache = () => {
-      clearAllStats()
-      console.info('GitHub cache cleared')
-    }
-
-    (window as any).__getGitHubCache = () => {
-      console.info('Current GitHub cache:')
-      console.table(
-        Object.entries(contributions.value).map(([repoId, cached]) => ({
-          repoId,
-          commits: cached.data.commits,
-          stars: cached.data.stars,
-          forks: cached.data.forks,
-          size: `${cached.data.size}KB`,
-          cachedAt: new Date(cached.timestamp).toLocaleString(),
-          expiresIn: `${Math.round((CACHE_DURATION - (Date.now() - cached.timestamp)) / 1000 / 60)}m`
-        }))
-      )
+  // Dev helpers - silent until used
+  if (isDev) {
+    ;(window as any).__clearGitHubCache = () => clearAllStats()
+    ;(window as any).__getGitHubCache = () => {
+      try {
+        console.table(
+          Object.entries(contributions.value).map(([id, cached]) => ({
+            repoId: id,
+            commits: cached.data.commits,
+            stars: cached.data.stars,
+            forks: cached.data.forks,
+            size: `${cached.data.size}KB`,
+            cachedAt: new Date(cached.timestamp).toLocaleString(),
+            expiresIn: `${Math.max(
+              0,
+              Math.round((CACHE_DURATION - (Date.now() - cached.timestamp)) / 1000 / 60)
+            )}m`,
+          }))
+        )
+      } catch {}
       return contributions.value
     }
-
-    (window as any).__refreshGitHubCache = async (repoId?: string) => {
+    ;(window as any).__refreshGitHubCache = async (repoId?: string) => {
       if (repoId) {
-        console.info(`Refreshing ${repoId}...`)
-        try {
-          await refreshRepoStats(repoId)
-          console.info(`Refreshed ${repoId}`)
-        } catch (error) {
-          console.error(`Failed to refresh ${repoId}:`, error)
-        }
-      } else {
-        console.info('Refreshing all cached repos...')
-        const repoIds = Object.keys(contributions.value)
-        for (const id of repoIds) {
-          try {
-            await refreshRepoStats(id)
-            console.info(`Refreshed ${id}`)
-          } catch (error) {
-            console.error(`Failed to refresh ${id}:`, error)
-          }
-        }
+        log.info(`refresh ${repoId}`)
+        try { await refreshRepoStats(repoId); log.info(`refresh ok ${repoId}`) }
+        catch (e) { log.error(`refresh error ${repoId}`, e) }
+        return
+      }
+      const ids = Object.keys(contributions.value)
+      for (const id of ids) {
+        log.info(`refresh ${id}`)
+        try { await refreshRepoStats(id); log.info(`refresh ok ${id}`) }
+        catch (e) { log.error(`refresh error ${id}`, e) }
       }
     }
-
-    console.info('Dev helpers available:')
-    console.info('  window.__clearGitHubCache() - Clear all cached stats')
-    console.info('  window.__getGitHubCache() - Inspect current cache')
-    console.info('  window.__refreshGitHubCache(repoId?) - Force refresh stats')
   }
 
   return {
@@ -357,6 +343,6 @@ export const useGitHubStore = defineStore('github', () => {
     fetchRepoStats,
     refreshRepoStats,
     clearStats,
-    clearAllStats
+    clearAllStats,
   }
 })

@@ -2,16 +2,16 @@
   <nav class="navbar" :class="{ 'navbar--mobile-open': isMobileMenuOpen }">
     <div class="navbar__container">
       <!-- Logo/name -->
-      <router-link :to="LANDING_PAGE" class="navbar__name">
+      <RouterLink :to="LANDING_PAGE" class="navbar__name">
         <span class="navbar__name-text">
           <span class="navbar__name-initial">W</span>ade
           <span class="navbar__name-initial">R</span>ogers
         </span>
-      </router-link>
+      </RouterLink>
 
       <!-- Desktop Navigation -->
       <div class="navbar__nav">
-        <router-link 
+        <RouterLink 
           v-for="link in navLinks" 
           :key="link.path" 
           :to="link.path" 
@@ -19,7 +19,7 @@
           active-class="navbar__link--active"
         >
           {{ link.label }}
-        </router-link>
+        </RouterLink>
         
         <!-- Theme toggle for desktop/tablet -->
         <div class="navbar__theme-wrapper">
@@ -42,7 +42,7 @@
 
     <!-- Mobile Navigation -->
     <div class="navbar__mobile" v-show="isMobileMenuOpen">
-      <router-link 
+      <RouterLink 
         v-for="link in navLinks" 
         :key="`mobile-${link.path}`" 
         :to="link.path" 
@@ -51,7 +51,7 @@
         @click="closeMobileMenu"
       >
         {{ link.label }}
-      </router-link>
+      </RouterLink>
       
       <!-- Theme toggle for mobile -->
       <div class="navbar__mobile-theme">

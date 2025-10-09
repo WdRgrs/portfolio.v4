@@ -1,6 +1,5 @@
 import type { Component } from 'vue'
-import type { ImageAsset } from './assets'
-import type { RepoStats } from '@/stores/github'
+import type { ImageAsset, LogoAsset } from './assets'
 
 export type ProjectType = 'project' | 'research' | 'wip' | 'web' | 'game' | 'ops'
 
@@ -13,6 +12,7 @@ export interface DevLogEntryConfig {
   tags: string[]
   readTime: number
   icon?: ImageAsset
+  logo?: LogoAsset
   repoId?: string
   featured?: boolean // TODO ??
   defaultExpanded?: boolean
