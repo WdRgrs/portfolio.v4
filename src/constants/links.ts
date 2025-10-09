@@ -1,6 +1,8 @@
 import type { LocalLink, ExternalLink } from "@/types"
 
 export const LINKS = {
+  PORTFOLIO_BASE: 'https://waderogers.dev',
+
   SITE: {
     LANDING: '/',
     SOFTWARE: '/software',
@@ -35,9 +37,9 @@ export const LINKS = {
     MELODIENT: 'https://github.com/WdRgrs/Melodient',
   },
 
-  PERSONAL: {
-    PORTFOLIO: 'https://waderogers.dev',
-  },
+  GITHUB_API: 'https://api.github.com',
+  
+  
 } as const;
 
 

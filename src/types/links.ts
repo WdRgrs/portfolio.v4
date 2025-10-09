@@ -1,4 +1,3 @@
-
 export type LocalLink = Readonly<{
   key: string
   label: string

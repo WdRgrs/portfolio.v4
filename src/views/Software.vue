@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import About from '@/components/software/About.vue';
 import Experience from '@/components/software/Experience.vue';
-import DevLog from '@/components/software/DevLog.vue';
+import DevLog from '@/components/devlog/index.vue';
 
 </script>
 
