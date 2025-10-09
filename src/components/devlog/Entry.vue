@@ -12,14 +12,17 @@
       @click="toggleExpand"
     >
       <div class="devlog-entry__left">
-        <img 
-          v-if="icon"
-          class="devlog-entry__icon"
-          :src="getAssetUrl(icon.path)"
-          :alt="icon.alt"
-          :width="32"
-          :height="32"
+        <!-- Logo (project branding) -->
+        <BaseLogo
+          v-if="logo"
+          :asset="logo"
+          size="md"
+          class="devlog-entry__logo"
         />
+        <span v-else-if="icon" class="devlog-entry__icon">
+          {{ icon }}
+        </span>
+        
         <div class="devlog-entry__meta">
           <h3 class="devlog-entry__title">{{ title }}</h3>
           <div class="devlog-entry__info">
@@ -80,8 +83,8 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { getAssetUrl } from '@/utils/assets'
-import type { ImageAsset } from '@/types/assets'
+import BaseLogo from '@/components/media/BaseLogo.vue'
+import type { LogoAsset } from '@/types/assets'
 import type { ProjectType } from '@/types/devlog'
 import type { RepoStats } from '@/stores/github'
 
@@ -98,7 +101,8 @@ interface Props {
   types?: ProjectType[]
   tags?: string[]
   readTime?: number
-  icon?: ImageAsset
+  icon?: string
+  logo?: LogoAsset
   stats?: Stats | RepoStats
   defaultExpanded?: boolean
 }
@@ -129,7 +133,6 @@ const hasFooter = computed(() => {
   return !!slots.footer || !!props.stats
 })
 
-// TODO - move to utils
 const formattedDate = computed(() => {
   const date = new Date(props.date)
   const now = new Date()
@@ -205,16 +208,28 @@ defineExpose({
     flex: 1;
   }
 
+  &__logo {
+    flex-shrink: 0;
+  }
+
   &__icon {
+    flex-shrink: 0;
     font-size: var(--text-2xl);
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
     
     @include mobile {
       font-size: var(--text-xl);
+      width: 40px;
+      height: 40px;
     }
   }
 
   &__meta {
     flex: 1;
+    min-width: 0; // Allow text truncation
   }
 
   &__title {
@@ -294,10 +309,6 @@ defineExpose({
 
   &__body {
     padding: var(--space-5);
-    font-family: var(--font-body);
-    font-size: var(--text-base);
-    line-height: var(--leading-relaxed);
-    color: var(--color-text-secondary);
     
     @include mobile {
       padding: var(--space-4);
@@ -346,7 +357,7 @@ defineExpose({
   }
 }
 
-// Accordion anim
+// Accordion animation
 .accordion-enter-active,
 .accordion-leave-active {
   transition: all 0.3s ease;

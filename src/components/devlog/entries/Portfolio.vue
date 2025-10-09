@@ -1,12 +1,12 @@
 <template>
   <DevLogEntry
-    :title="props.config.title"
-    :date="props.config.date"
-    :types="props.config.types"
-    :tags="props.config.tags"
-    :read-time="props.config.readTime"
-    :icon="props.config.icon"
-    :default-expanded="props.config.defaultExpanded"
+    :title="config.title"
+    :date="config.date"
+    :types="config.types"
+    :tags="config.tags"
+    :read-time="config.readTime"
+    :logo="config.logo"
+    :default-expanded="config.defaultExpanded"
     :stats="githubStats"
   >
     <p>

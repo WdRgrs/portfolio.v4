@@ -1,7 +1,7 @@
 import type { DevLogEntryConfig, DevLogFilter } from '@/types/devlog'
-import { SOFTWARE_ICONS } from '@/assets/software'
+import { ALPHABITS_LOGO, PORTFOLIO_LOGO } from '@/assets/software'
 import Portfolio from '@/components/devlog/entries/Portfolio.vue'
-// import Alphabits from '@/components/devlog/entries/Alphabits.vue'
+import Alphabits from '@/components/devlog/entries/Alphabits.vue'
 // import PiHole from '@/components/devlog/entries/PiHole.vue'
 
 export const DEVLOG_ENTRIES: DevLogEntryConfig[] = [
@@ -13,29 +13,22 @@ export const DEVLOG_ENTRIES: DevLogEntryConfig[] = [
     types: ['project', 'wip', 'web'],
     tags: ['Vue', 'TypeScript', 'SCSS'],
     readTime: 2,
-    icon: SOFTWARE_ICONS[0],
+    logo: PORTFOLIO_LOGO,
     repoId: 'WdRgrs/portfolio.v4',
     featured: true
   },
-  // {
-  //   id: 'alphabits-2024',
-  //   component: Alphabits,
-  //   title: 'Building Alphabits in Rust',
-  //   date: '2025-04-15',
-  //   types: ['game', 'project'],
-  //   tags: ['Rust', 'WebAssembly', 'Game Dev'],
-  //   readTime: 4,
-  //   repoId: 'WdRgrs/alphabits'
-  // },
-  // {
-  //   id: 'pihole-2024',
-  //   component: PiHole,
-  //   title: 'Running Pi-hole',
-  //   date: '2024-12-30',
-  //   types: ['ops', 'research'],
-  //   tags: ['Raspberry Pi', 'Networking', 'Ad-block'],
-  //   readTime: 2
-  // }
+  {
+    id: 'alphabits-2025',
+    component: Alphabits,
+    title: 'Building Alphabits in Rust',
+    date: '2025-04-15',
+    types: ['game', 'project', 'research'],
+    tags: ['Rust', 'WebAssembly', 'Game Dev'],
+    readTime: 6,
+    logo: ALPHABITS_LOGO,
+    defaultExpanded: false,
+    repoId: 'WdRgrs/alphabits'
+  },
 ]
 
 export const DEVLOG_FILTERS: DevLogFilter[] = [
