@@ -49,7 +49,7 @@ interface QuickLink {
 
 const router = useRouter()
 const canGoBack = ref(false)
-const { LANDING} = LINKS.SITE
+const { LANDING } = LINKS.SITE
 const quickLinks: QuickLink[] = SITE_LINKS.filter(ln => ln.main)
 
 const goBack = () => {

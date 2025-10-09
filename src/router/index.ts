@@ -5,7 +5,6 @@ import Software from '@/views/Software.vue'
 import Welding from '@/views/Welding.vue'
 import Photography from '@/views/Photography.vue'
 import Resume from '@/views/Resume.vue'
-import DevLog from '@/views/DevLog.vue'
 import NotFound from '@/views/NotFound.vue'
 
 const { 
@@ -13,8 +12,6 @@ const {
   SOFTWARE,
   WELDING,
   PHOTOGRAPHY,
-  DEV_LOG,
-  RESUME
 } = LINKS.SITE
 
 const router = createRouter({
@@ -58,15 +55,11 @@ const router = createRouter({
       } 
     },
     { 
-      path: RESUME, 
-      component: Resume 
-    },
-    { 
       path: '/:pathMatch(.*)*', 
       name: 'not-found',
       component: NotFound,
       meta: {
-        title: 'WR | Page Not Found'
+        title: 'Page Not Found'
       }
     }
   ],
