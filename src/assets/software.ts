@@ -1,19 +1,6 @@
 import type { ImageAsset, VideoAsset, LogoAsset } from '@/types/assets'
 
-export const SOFTWARE_ICONS: ImageAsset[] = [
-  {
-    id: 'portfolio-icon-01',
-    type: 'image',
-    path: 'icons/WRLogo.png',
-    alt: 'Base portfolio logo - initials of W and R',
-    title: '',
-    description: 'Portfolio Logo',
-    width: 320,
-    height: 320,
-    tags: ['logo', 'portfolio', 'initials']
-  },
-]
-
+// PORTFOLIO
 export const PORTFOLIO_LOGO: LogoAsset = {
   id: 'portfolio-logo-v4',
   type: 'logo',
@@ -107,4 +94,45 @@ export const ALPHABITS_IMAGES: ImageAsset[] = [
     aspectRatio: '16:9',
     tags: ['pause', 'screenshot', 'ui']
   }
+]
+
+// PIHOLE
+export const PIHOLE_LOGO: LogoAsset = {
+  id: 'pi-hole-logo',
+  type: 'logo',
+  format: 'webp',
+  path: 'software/Pi-hole_logo.webp',
+  alt: 'Pi-hole logo',
+  title: 'Pi-hole Logo',
+  width: 487,
+  height: 512
+}
+
+export const PIHOLE_IMAGES: ImageAsset[] = [
+  {
+    id: 'pi-hole-dashboard',
+    type: 'image',
+    path: 'software/Pi-hole_dashboard.webp',
+    alt: 'Pi-hole browser dashboard showing recent network traffic',
+    title: 'Pi-hole dashboard',
+    description: 'Pi-hole browser dashboard showing statistics for previous 24h',
+    date: '2025-04-15',
+    width: 1600,
+    height: 900,
+    aspectRatio: '16:9',
+    tags: ['dashboard', 'screenshot', 'DNS', 'pi-hole']
+  },
+  {
+    id: 'pi-hole-dashboard-portrait',
+    type: 'image',
+    path: 'software/Pi-hole_dashboard_portrait.webp',
+    alt: 'Pi-hole browser dashboard showing recent network traffic (portait)',
+    title: 'Pi-hole dashboard (portrait)',
+    description: 'PI-hole browser dashboard showing statistics for previous 24h (portrait)',
+    date: '2025-04-15',
+    width: 1255,
+    height: 1320,
+    aspectRatio: '3:4',
+    tags: ['dashboard', 'screenshot', 'DNS', 'pi-hole']
+  },
 ]
