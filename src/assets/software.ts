@@ -110,19 +110,6 @@ export const PIHOLE_LOGO: LogoAsset = {
 
 export const PIHOLE_IMAGES: ImageAsset[] = [
   {
-    id: 'pi-hole-dashboard',
-    type: 'image',
-    path: 'software/Pi-hole_dashboard.webp',
-    alt: 'Pi-hole browser dashboard showing recent network traffic',
-    title: 'Pi-hole dashboard',
-    description: 'Pi-hole browser dashboard showing statistics for previous 24h',
-    date: '2025-04-15',
-    width: 1600,
-    height: 900,
-    aspectRatio: '16:9',
-    tags: ['dashboard', 'screenshot', 'DNS', 'pi-hole']
-  },
-  {
     id: 'pi-hole-dashboard-portrait',
     type: 'image',
     path: 'software/Pi-hole_dashboard_portrait.webp',
@@ -133,6 +120,19 @@ export const PIHOLE_IMAGES: ImageAsset[] = [
     width: 1255,
     height: 1320,
     aspectRatio: '3:4',
+    tags: ['dashboard', 'screenshot', 'DNS', 'pi-hole']
+  },
+  {
+    id: 'pi-hole-dashboard',
+    type: 'image',
+    path: 'software/Pi-hole_dashboard_query.webp',
+    alt: 'Pi-hole browser dashboard showing recent network traffic',
+    title: 'Pi-hole dashboard',
+    description: 'Pi-hole browser dashboard showing statistics for previous 24h',
+    date: '2025-04-15',
+    width: 1600,
+    height: 900,
+    aspectRatio: '16:9',
     tags: ['dashboard', 'screenshot', 'DNS', 'pi-hole']
   },
 ]

@@ -51,6 +51,7 @@
         <BaseImage
           :asset="ALPHABITS_IMAGES[0]"
           class="devlog-feature__image"
+          expandable
         />
         <div class="devlog-feature__text">
           <p>
@@ -69,6 +70,7 @@
           v-for="image in [ALPHABITS_IMAGES[1], ALPHABITS_IMAGES[3]]"
           :key="image.id"
           :asset="image"
+          expandable
           class="devlog-gallery__item"
         />
       </div>
@@ -151,7 +153,7 @@
     </DevLogSection>
 
     <!-- Next Steps -->
-    <DevLogSection heading="Next Steps">
+    <DevLogSection heading="Next Steps" lastChild>
       <p>
         Short-term: finish the abilities system for Hardcade mode. 
         Mid-term: explore Rust for native apps where performance matters. For the next game, 
@@ -218,6 +220,9 @@ function openLink(url: string) {
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
 
+  @include tablet {
+    grid-template-columns: 1fr;
+  }
   @include mobile {
     grid-template-columns: 1fr;
   }
@@ -249,7 +254,7 @@ function openLink(url: string) {
   }
 
   &__item {
-    cursor: pointer;
+    // cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 
     &:hover {

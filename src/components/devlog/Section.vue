@@ -1,5 +1,10 @@
 <template>
-  <section class="devlog-section" :class="{ 'devlog-section--no-divider': noDivider }">
+  <section class="devlog-section" 
+    :class="{ 
+      'devlog-section--no-divider': noDivider,
+      'devlog-section--last': lastChild 
+    }"
+  >
     <header v-if="$slots.heading || heading" class="devlog-section__header">
       <slot name="heading">
         <h4 class="devlog-section__title">{{ heading }}</h4>
@@ -16,27 +21,33 @@
 interface Props {
   heading?: string
   noDivider?: boolean
+  lastChild?: boolean
 }
 
 withDefaults(defineProps<Props>(), {
   heading: undefined,
-  noDivider: false
+  noDivider: false,
+  lastChild: false,
 })
 </script>
 
 <style scoped lang="scss">
 .devlog-section {
   margin-bottom: var(--space-8);
+  
+  &--last {
+    margin-bottom: 0;
+  }
 
   &__header {
     margin-bottom: var(--space-4);
-    padding-top: var(--space-2);
-    border-top: 1px solid var(--color-divider);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-divider);
   }
 
   &--no-divider &__header {
-    border-top: none;
-    padding-top: 0;
+    border-bottom: none;
+    padding-bottom: 0;
   }
 
   &__title {
@@ -52,7 +63,6 @@ withDefaults(defineProps<Props>(), {
       font-family: var(--font-body);
       font-size: var(--text-base);
       line-height: var(--leading-relaxed);
-      color: var(--color-text-secondary);
       margin-bottom: var(--space-4);
 
       &:last-child {

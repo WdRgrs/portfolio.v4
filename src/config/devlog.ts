@@ -1,8 +1,8 @@
 import type { DevLogEntryConfig, DevLogFilter } from '@/types/devlog'
-import { ALPHABITS_LOGO, PORTFOLIO_LOGO } from '@/assets/software'
+import { ALPHABITS_LOGO, PIHOLE_LOGO, PORTFOLIO_LOGO } from '@/assets/software'
 import Portfolio from '@/components/devlog/entries/Portfolio.vue'
 import Alphabits from '@/components/devlog/entries/Alphabits.vue'
-// import PiHole from '@/components/devlog/entries/PiHole.vue'
+import PiHole from '@/components/devlog/entries/PiHole.vue'
 
 export const DEVLOG_ENTRIES: DevLogEntryConfig[] = [
   {
@@ -29,6 +29,18 @@ export const DEVLOG_ENTRIES: DevLogEntryConfig[] = [
     defaultExpanded: false,
     repoId: 'WdRgrs/alphabits'
   },
+  {
+    id: 'pihole-2025',
+    component: PiHole,
+    title: 'Exploring the Home Network with Pi-hole',
+    date: '2024-12-30',
+    types: ['research', 'project', 'ops'],
+    tags: ['Raspberry Pi', 'Networking', 'DNS', 'Linux'],
+    readTime: 4,
+    logo: PIHOLE_LOGO,
+    defaultExpanded: false,
+    repoId: undefined,
+  }
 ]
 
 export const DEVLOG_FILTERS: DevLogFilter[] = [
