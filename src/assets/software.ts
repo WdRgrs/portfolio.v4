@@ -98,10 +98,10 @@ export const ALPHABITS_IMAGES: ImageAsset[] = [
 
 // PIHOLE
 export const PIHOLE_LOGO: LogoAsset = {
-  id: 'pi-hole-logo',
+  id: 'pihole-logo',
   type: 'logo',
   format: 'webp',
-  path: 'software/Pi-hole_logo.webp',
+  path: 'software/Pi-hole_Logo.webp',
   alt: 'Pi-hole logo',
   title: 'Pi-hole Logo',
   width: 487,

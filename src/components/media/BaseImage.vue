@@ -3,7 +3,7 @@
     ref="containerRef"
     class="base-image"
     :class="[
-      `base-image--${aspectRatio}`,
+      `base-image--${parsedAspectRatio}`,
       `base-image--${objectFit}`,
       { 'base-image--loading': !isLoaded }
     ]"
@@ -49,7 +49,6 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  aspectRatio: '16:9',
   objectFit: 'cover',
   lazyLoad: true,
   showCaption: false
@@ -67,6 +66,10 @@ const shouldLoad = ref(!props.lazyLoad) // Load immediately if not lazy
 
 const imageSrc = computed(() => getAssetUrl(props.asset.path))
 
+const parsedAspectRatio = computed(() => {
+  return props.aspectRatio ?? props.asset?.aspectRatio ?? '16:9'
+})
+
 // Lazy loading with Intersection Observer
 if (props.lazyLoad) {
   const { stop } = useIntersectionObserver(
@@ -78,7 +81,7 @@ if (props.lazyLoad) {
       }
     },
     {
-      rootMargin: '50px' // Start loading 50px before entering viewport
+      rootMargin: '50px' // load 50px before entering viewport
     }
   )
 }
