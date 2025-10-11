@@ -7,16 +7,17 @@
       `base-image--${objectFit}`,
       { 
         'base-image--loading': !isLoaded,
-        'base-image--expandable': expandable
+        'base-image--expandable': expandable,
       }
     ]"
     @click="handleImageClick"
   >
+    <!-- Preview/Thumbnail Image -->
     <img
       v-if="shouldLoad"
       ref="imgRef"
       class="base-image__img"
-      :src="imageSrc"
+      :src="previewSrc"
       :alt="asset.alt"
       :width="asset.width"
       :height="asset.height"
@@ -37,14 +38,14 @@
       </svg>
     </div>
 
-    <!-- Optional caption -->
-    <figcaption v-if="showCaption && (asset.title || asset.description)" class="base-image__caption">
+    <!-- Optional caption (only shown when not expandable) -->
+    <figcaption v-if="!expandable && showCaption && (asset.title || asset.description)" class="base-image__caption">
       <strong v-if="asset.title">{{ asset.title }}</strong>
       <span v-if="asset.description">{{ asset.description }}</span>
     </figcaption>
   </figure>
 
-  <!-- Expanded Modal -->
+  <!-- Expanded Modal (using Gallery's better styling) -->
   <Teleport to="body">
     <Transition name="modal">
       <div 
@@ -52,34 +53,34 @@
         class="base-image__modal"
         @click.self="closeModal"
       >
-        <div class="base-image__modal-container">
-          <button 
-            class="base-image__modal-close" 
-            @click="closeModal"
-            aria-label="Close image modal"
-          >
-            ×
-          </button>
+        <button 
+          class="base-image__modal-close" 
+          @click="closeModal"
+          aria-label="Close image modal"
+        >
+          ×
+        </button>
 
-          <div class="base-image__modal-content">
-            <img
-              class="base-image__modal-image"
-              :src="imageSrc"
-              :alt="asset.alt"
-            />
+        <div class="base-image__modal-content" @click.stop>
+          <!-- Full-res image in modal -->
+          <img
+            class="base-image__modal-image"
+            :src="fullSrc"
+            :alt="asset.alt"
+          />
 
-            <div v-if="asset.title || asset.description" class="base-image__modal-info">
-              <h3 v-if="asset.title" class="base-image__modal-title">
-                {{ asset.title }}
-              </h3>
-              <p v-if="asset.description" class="base-image__modal-description">
-                {{ asset.description }}
-              </p>
-              <div v-if="asset.date" class="base-image__modal-meta">
-                <span class="base-image__modal-date">
-                  {{ formatDate(asset.date) }}
-                </span>
-              </div>
+          <!-- Caption info in modal -->
+          <div v-if="asset.title || asset.description" class="base-image__modal-info">
+            <h3 v-if="asset.title" class="base-image__modal-title">
+              {{ asset.title }}
+            </h3>
+            <p v-if="asset.description" class="base-image__modal-description">
+              {{ asset.description }}
+            </p>
+            <div v-if="asset.date" class="base-image__modal-meta">
+              <span class="base-image__modal-date">
+                {{ formatDate(asset.date) }}
+              </span>
             </div>
           </div>
         </div>
@@ -101,7 +102,8 @@ interface Props {
   objectFit?: ObjectFit
   lazyLoad?: boolean
   showCaption?: boolean
-  expandable?: boolean  
+  expandable?: boolean  // If true, clicking opens full-res modal
+  useFullRes?: boolean  // If true, always loads full-res (for non-expandable uses)
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -109,6 +111,7 @@ const props = withDefaults(defineProps<Props>(), {
   lazyLoad: true,
   showCaption: false,
   expandable: false,
+  useFullRes: false,
 })
 
 const emit = defineEmits<{
@@ -124,7 +127,18 @@ const isLoaded = ref(false)
 const shouldLoad = ref(!props.lazyLoad)
 const isExpanded = ref(false)
 
-const imageSrc = computed(() => getAssetUrl(props.asset.path))
+// Preview: Uses path by default, or full if useFullRes=true
+const previewSrc = computed(() => {
+  const path = props.useFullRes 
+    ? (props.asset.full || props.asset.path)  // Use full if available
+    : props.asset.path                         // Otherwise use standard path
+  return getAssetUrl(path)
+})
+
+// Full: Always uses full path in modal (fallback to path if full doesn't exist)
+const fullSrc = computed(() => {
+  return getAssetUrl(props.asset.full || props.asset.path)
+})
 
 const parsedAspectRatio = computed(() => {
   return props.aspectRatio ?? props.asset?.aspectRatio ?? '16:9'
@@ -204,7 +218,6 @@ onUnmounted(() => {
   border-radius: var(--radius-lg);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-  // Expandable state
   &--expandable {
     cursor: pointer;
     
@@ -219,25 +232,11 @@ onUnmounted(() => {
   }
 
   // Aspect ratio enforcement
-  &--16\:9 {
-    aspect-ratio: 16 / 9;
-  }
-
-  &--3\:4 {
-    aspect-ratio: 3 / 4;
-  }
-
-  &--1\:1 {
-    aspect-ratio: 1 / 1;
-  }
-
-  &--21\:9 {
-    aspect-ratio: 21 / 9;
-  }
-
-  &--auto {
-    aspect-ratio: auto;
-  }
+  &--16\:9 { aspect-ratio: 16 / 9; }
+  &--3\:4 { aspect-ratio: 3 / 4; }
+  &--1\:1 { aspect-ratio: 1 / 1; }
+  &--21\:9 { aspect-ratio: 21 / 9; }
+  &--auto { aspect-ratio: auto; }
 
   &__img {
     width: 100%;
@@ -247,31 +246,19 @@ onUnmounted(() => {
   }
 
   // Object-fit variants
-  &--cover &__img {
-    object-fit: cover;
-  }
-
-  &--contain &__img {
-    object-fit: contain;
-  }
-
+  &--cover &__img { object-fit: cover; }
+  &--contain &__img { object-fit: contain; }
+  &--none &__img { object-fit: none; }
+  &--scale-down &__img { object-fit: scale-down; }
+  
   &--fill {
     aspect-ratio: auto !important;
     height: 100%;
-
     .base-image__img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-  }
-
-  &--none &__img {
-    object-fit: none;
-  }
-
-  &--scale-down &__img {
-    object-fit: scale-down;
   }
 
   &__placeholder {
@@ -292,12 +279,9 @@ onUnmounted(() => {
   }
 
   @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
+    to { transform: rotate(360deg); }
   }
 
-  // Expand indicator
   &__expand-indicator {
     position: absolute;
     top: var(--space-3);
@@ -338,44 +322,39 @@ onUnmounted(() => {
       display: block;
       line-height: var(--leading-relaxed);
     }
-  }  
-  // Loading state
+  }
+
   &--loading &__img {
     opacity: 0;
   }
 
-  
-
-  // Modal styles
+  // Modal (from Gallery's better implementation)
   &__modal {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.9);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
     z-index: var(--z-modal);
     display: grid;
     place-items: center;
-    padding: var(--space-6);
+    padding: var(--space-8);
     overflow-y: auto;
-  }
 
-  &__modal-container {
-    position: relative;
-    max-width: 1400px;
-    max-height: 90vh;
-    width: 100%;
+    @include mobile {
+      padding: var(--space-4);
+    }
   }
 
   &__modal-close {
-    position: absolute;
-    top: var(--space-4);
-    right: var(--space-4);
+    position: fixed;
+    top: var(--space-6);
+    right: var(--space-6);
     z-index: calc(var(--z-modal) + 1);
     width: 48px;
     height: 48px;
-    background: rgba(0, 0, 0, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-md);
     color: white;
     font-size: var(--text-3xl);
     cursor: pointer;
@@ -384,22 +363,32 @@ onUnmounted(() => {
     transition: all 0.2s ease;
     
     &:hover {
-      background: rgba(0, 0, 0, 0.95);
-      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    @include mobile {
+      top: var(--space-4);
+      right: var(--space-4);
+      width: 40px;
+      height: 40px;
     }
   }
 
   &__modal-content {
+    max-width: 90vw;
+    max-height: 90vh;
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
   }
 
   &__modal-image {
-    width: 100%;
+    border-radius: var(--radius-lg);
+    max-width: 100%;
     max-height: 70vh;
     object-fit: contain;
-    border-radius: var(--radius-lg);
   }
 
   &__modal-info {
@@ -442,7 +431,7 @@ onUnmounted(() => {
 .modal-leave-active {
   transition: opacity 0.3s ease;
   
-  .base-image__modal-container {
+  .base-image__modal-content {
     transition: transform 0.3s ease, opacity 0.3s ease;
   }
 }
@@ -451,7 +440,7 @@ onUnmounted(() => {
 .modal-leave-to {
   opacity: 0;
   
-  .base-image__modal-container {
+  .base-image__modal-content {
     transform: scale(0.9);
     opacity: 0;
   }
@@ -472,7 +461,7 @@ onUnmounted(() => {
   .modal-leave-active {
     transition: none;
     
-    .base-image__modal-container {
+    .base-image__modal-content {
       transition: none;
       transform: none;
     }

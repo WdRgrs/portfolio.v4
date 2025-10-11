@@ -3,7 +3,7 @@ export type ObjectFit = 'cover' | 'contain' | 'fill' | 'none' | 'scale-down'
 
 export interface BaseAsset {
   id: string
-  path: string // Relative to public/assets/
+  path: string // preview
   alt: string
   title?: string
   description?: string
@@ -17,11 +17,12 @@ export interface ImageAsset extends BaseAsset {
   height?: number
   aspectRatio?: AspectRatio
   placeholder?: string
+  full?: string
 }
 
 export interface VideoAsset extends BaseAsset {
   type: 'video'
-  poster?: string // Path to poster image
+  poster?: string // ph
   duration?: number
   width?: number
   height?: number
@@ -33,6 +34,16 @@ export interface LogoAsset extends BaseAsset {
   format: 'svg' | 'webp' | 'png'
   width?: number
   height?: number
+}
+
+export interface PhotoSeries {
+  id: string
+  coverImage: ImageAsset
+  images: ImageAsset[]
+  title?: string
+  description?: string
+  tags?: string[]
+  date?: string | Date
 }
 
 export type Asset = ImageAsset | VideoAsset | LogoAsset

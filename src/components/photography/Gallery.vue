@@ -2,64 +2,49 @@
   <div class="photo-gallery">
     <div class="photo-gallery__grid">
       <div
-        v-for="photo in galleryPhotos"
-        :key="photo.id"
+        v-for="(series, idx) in gallerySeries"
+        :key="series.id"
         class="photo-gallery__frame"
-        :class="`photo-gallery__frame--${photo.size}`"
+        :class="`photo-gallery__frame--${series.layout.size}`"
         :style="{
-          gridColumn: `${photo.col} / span ${photo.colSpan}`,
-          gridRow: `${photo.row} / span ${photo.rowSpan}`,
+          gridColumn: `${series.layout.col} / span ${series.layout.colSpan}`,
+          gridRow: `${series.layout.row} / span ${series.layout.rowSpan}`,
         }"
-        @click="expandPhoto(photo)"
+        @click="openLightbox(idx)"
       > 
-      <!-- {{ photo.id }} -->
         <BaseImage
-          :asset="photo.asset"
+          :asset="series.data.coverImage"
           object-fit="fill"
           :lazy-load="true"
           aspect-ratio="auto"
           class="photo-gallery__image"
         />
+        
+        <!-- Series indicator badge -->
+        <div v-if="series.data.images.length > 1" class="photo-gallery__series-badge">
+          <span>{{ series.data.images.length }}</span>
+        </div>
       </div>
     </div>
-
-    <!-- Lightbox Modal -->
-    <Teleport to="body">
-      <Transition name="modal">
-        <div 
-          v-if="expandedPhoto" 
-          class="photo-gallery__modal"
-          @click.self="closeModal"
-        >
-          <button 
-            class="photo-gallery__modal-close" 
-            @click="closeModal"
-            aria-label="Close image modal"
-          >
-            ×
-          </button>
-
-          <div class="photo-gallery__modal-content" @click.stop>
-            <BaseImage
-              :asset="expandedPhoto.asset"
-              :lazy-load="false"
-              :show-caption="true"
-              class="photo-gallery__modal-image"
-            />
-          </div>
-        </div>
-      </Transition>
-    </Teleport>
+    
+    <!-- Lightbox shows images from selected series -->
+    <Lightbox
+      v-if="activeSeries !== null"
+      :images="gallerySeries[activeSeries].data.images"
+      :current-index="lightboxIndex"
+      :series-info="gallerySeries[activeSeries].data"
+      @close="closeLightbox"
+      @navigate="lightboxIndex = $event"
+    />  
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed } from 'vue'
 import BaseImage from '@/components/media/BaseImage.vue'
-import { getAssetUrl } from '@/utils/assets'
-import { ALPHABITS_IMAGES } from '@/assets/software'
-import type { ImageAsset } from '@/types/assets'
-import { TEMP_PHOTOGRAPHY_IMAGES as PHOTOGRAPHY_IMAGES } from '@/assets/photography'
+import Lightbox from '@/components/media/Lightbox.vue'
+import type { ImageAsset, PhotoSeries } from '@/types/assets'
+import { TEMP_PHOTOGRAPHY_SERIES } from '@/assets/photography'
 
 interface LayoutConfig {
   id: number
@@ -70,98 +55,52 @@ interface LayoutConfig {
   size: 'sm' | 'md' | 'lg'
 }
 
-interface GalleryPhoto extends LayoutConfig {
-  asset: ImageAsset
+interface GallerySeries {
+  id: string
+  layout: LayoutConfig
+  data: PhotoSeries
 }
 
-// Separate layout configuration
+// Layout configuration for grid positioning
 const GALLERY_LAYOUT: LayoutConfig[] = [
   { id: 1, row: 1, col: 6, rowSpan: 1, colSpan: 2, size: 'sm' },
   { id: 2, row: 2, col: 5, rowSpan: 2, colSpan: 2, size: 'md' },
   { id: 3, row: 2, col: 7, rowSpan: 1, colSpan: 2, size: 'sm' },
   { id: 4, row: 3, col: 7, rowSpan: 3, colSpan: 4, size: 'lg' },
   { id: 5, row: 3, col: 11, rowSpan: 1, colSpan: 1, size: 'sm' },
-  { id: 6, row: 4, col: 4, rowSpan: 1, colSpan: 2, size: 'sm' },
-  { id: 7, row: 5, col: 3, rowSpan: 1, colSpan: 1, size: 'sm' },
-  { id: 8, row: 5, col: 4, rowSpan: 4, colSpan: 3, size: 'lg' },
-  { id: 9, row: 6, col: 2, rowSpan: 2, colSpan: 2, size: 'sm' },
-  { id: 10, row: 6, col: 7, rowSpan: 2, colSpan: 3, size: 'md' },
-  { id: 11, row: 6, col: 10, rowSpan: 1, colSpan: 2, size: 'sm' },
-  { id: 12, row: 7, col: 10, rowSpan: 1, colSpan: 1, size: 'sm' },
-  { id: 13, row: 8, col: 8, rowSpan: 2, colSpan: 2, size: 'md' },
-  { id: 14, row: 9, col: 6, rowSpan: 1, colSpan: 2, size: 'sm' },
-  { id: 15, row: 10, col: 7, rowSpan: 1, colSpan: 1, size: 'sm' },
-  { id: 16, row: 4, col: 11, rowSpan: 2, colSpan: 2, size: 'sm' },
 ]
 
-// Asset assignments - map layout IDs to specific images
-const ASSET_MAP: Record<number, ImageAsset> = {
-  1: PHOTOGRAPHY_IMAGES[0],
-  2: PHOTOGRAPHY_IMAGES[9],
-  3: PHOTOGRAPHY_IMAGES[5],
-  4: PHOTOGRAPHY_IMAGES[1],
-  5: PHOTOGRAPHY_IMAGES[8],
-  6: PHOTOGRAPHY_IMAGES[2],
-  7: PHOTOGRAPHY_IMAGES[6],
-  8: PHOTOGRAPHY_IMAGES[14],
-  9: PHOTOGRAPHY_IMAGES[3],
-  10: PHOTOGRAPHY_IMAGES[4],
-  11: PHOTOGRAPHY_IMAGES[10],
-  12: PHOTOGRAPHY_IMAGES[12],
-  13: PHOTOGRAPHY_IMAGES[11],
-  14: PHOTOGRAPHY_IMAGES[13],
-  15: PHOTOGRAPHY_IMAGES[7],
-  16: PHOTOGRAPHY_IMAGES[16],
+// Map layout IDs to photo series
+const SERIES_MAP: Record<number, PhotoSeries> = {
+  1: TEMP_PHOTOGRAPHY_SERIES[0],
+  2: TEMP_PHOTOGRAPHY_SERIES[1],
+  3: TEMP_PHOTOGRAPHY_SERIES[2],
+  4: TEMP_PHOTOGRAPHY_SERIES[3],
+  5: TEMP_PHOTOGRAPHY_SERIES[4],
 }
 
-// Placeholder creator for development
-function createPlaceholder(id: number): ImageAsset {
-  return {
-    id: `placeholder-${id}`,
-    type: 'image',
-    path: 'photography/videos/drone_hero_poster.jpg',
-    alt: `Gallery photo ${id}`,
-    title: `Photo ${id}`,
-    width: 1920,
-    height: 1080,
-    tags: ['placeholder']
-  }
-}
-
-// Combine layout with assets
-const galleryPhotos = computed<GalleryPhoto[]>(() => {
+// Combine layout with series data
+const gallerySeries = computed<GallerySeries[]>(() => {
   return GALLERY_LAYOUT.map(layout => ({
-    ...layout,
-    asset: ASSET_MAP[layout.id] || createPlaceholder(layout.id)
+    id: `series-${layout.id}`,
+    layout,
+    data: SERIES_MAP[layout.id]
   }))
 })
 
-const expandedPhoto = ref<GalleryPhoto | null>(null)
+// Lightbox state
+const activeSeries = ref<number | null>(null)
+const lightboxIndex = ref(0)
 
-function expandPhoto(photo: GalleryPhoto) {
-  expandedPhoto.value = photo
-  document.body.style.overflow = 'hidden'
+function openLightbox(seriesIndex: number) {
+  activeSeries.value = seriesIndex
+  lightboxIndex.value = 0  // Start at first image in series
 }
 
-function closeModal() {
-  expandedPhoto.value = null
-  document.body.style.overflow = ''
+function closeLightbox() {
+  activeSeries.value = null
+  lightboxIndex.value = 0
 }
-
-function handleKeydown(e: KeyboardEvent) {
-  if (e.key === 'Escape' && expandedPhoto.value) {
-    closeModal()
-  }
-}
-
-onMounted(() => {
-  window.addEventListener('keydown', handleKeydown)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeydown)
-  document.body.style.overflow = ''
-})
 </script>
 
 <style scoped lang="scss">
@@ -374,5 +313,20 @@ onUnmounted(() => {
       transform: none;
     }
   }
+}
+.photo-gallery__series-badge {
+  position: absolute;
+  bottom: var(--space-3);
+  right: var(--space-3);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  pointer-events: none;
 }
 </style>

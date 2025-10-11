@@ -1,4 +1,4 @@
-import type { ImageAsset, VideoAsset } from '@/types/assets'
+import type { ImageAsset, PhotoSeries, VideoAsset } from '@/types/assets'
 
 export const PHOTOGRAPHY_VIDEOS: VideoAsset[] = [
   {
@@ -65,9 +65,6 @@ export const TEMP_PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     height: 2160,
     tags: ['landscape', 'sunset', 'austin']
   },
-
-
-
   {
     id: 'landscape-01',
     type: 'image',
@@ -104,9 +101,6 @@ export const TEMP_PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     height: 2160,
     tags: ['landscape', 'sunset', 'austin']
   },
-  
-  
-
   {
     id: 'landscape-01',
     type: 'image',
@@ -215,5 +209,65 @@ export const TEMP_PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     width: 3840,
     height: 2160,
     tags: ['landscape', 'sunset', 'austin']
+  },
+]
+
+// Grouped into series for gallery
+export const TEMP_PHOTOGRAPHY_SERIES: PhotoSeries[] = [
+  {
+    id: 'series-1',
+    title: 'Series 1',
+    coverImage: TEMP_PHOTOGRAPHY_IMAGES[0],
+    images: [
+      TEMP_PHOTOGRAPHY_IMAGES[0],
+      TEMP_PHOTOGRAPHY_IMAGES[1],
+      TEMP_PHOTOGRAPHY_IMAGES[2],
+      TEMP_PHOTOGRAPHY_IMAGES[3],
+    ],
+    tags: ['temp']
+  },
+  {
+    id: 'series-2',
+    title: 'Series 2',
+    coverImage: TEMP_PHOTOGRAPHY_IMAGES[4],
+    images: [
+      TEMP_PHOTOGRAPHY_IMAGES[4],
+      TEMP_PHOTOGRAPHY_IMAGES[5],
+      TEMP_PHOTOGRAPHY_IMAGES[6],
+    ],
+    tags: ['temp']
+  },
+  {
+    id: 'series-3',
+    title: 'Series 3',
+    coverImage: TEMP_PHOTOGRAPHY_IMAGES[7],
+    images: [
+      TEMP_PHOTOGRAPHY_IMAGES[7],
+      TEMP_PHOTOGRAPHY_IMAGES[8],
+      TEMP_PHOTOGRAPHY_IMAGES[9],
+      TEMP_PHOTOGRAPHY_IMAGES[10],
+    ],
+    tags: ['temp']
+  },
+  {
+    id: 'series-4',
+    title: 'Series 4',
+    coverImage: TEMP_PHOTOGRAPHY_IMAGES[11],
+    images: [
+      TEMP_PHOTOGRAPHY_IMAGES[11],
+      TEMP_PHOTOGRAPHY_IMAGES[12],
+      TEMP_PHOTOGRAPHY_IMAGES[13],
+    ],
+    tags: ['temp']
+  },
+  {
+    id: 'series-5',
+    title: 'Series 5',
+    coverImage: TEMP_PHOTOGRAPHY_IMAGES[14],
+    images: [
+      TEMP_PHOTOGRAPHY_IMAGES[14],
+      TEMP_PHOTOGRAPHY_IMAGES[15],
+    ],
+    tags: ['temp']
   },
 ]
