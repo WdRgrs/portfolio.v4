@@ -61,22 +61,42 @@ interface GallerySeries {
   data: PhotoSeries
 }
 
-// Layout configuration for grid positioning
 const GALLERY_LAYOUT: LayoutConfig[] = [
   { id: 1, row: 1, col: 6, rowSpan: 1, colSpan: 2, size: 'sm' },
   { id: 2, row: 2, col: 5, rowSpan: 2, colSpan: 2, size: 'md' },
   { id: 3, row: 2, col: 7, rowSpan: 1, colSpan: 2, size: 'sm' },
   { id: 4, row: 3, col: 7, rowSpan: 3, colSpan: 4, size: 'lg' },
   { id: 5, row: 3, col: 11, rowSpan: 1, colSpan: 1, size: 'sm' },
+  { id: 6, row: 4, col: 4, rowSpan: 1, colSpan: 2, size: 'sm' },
+  { id: 7, row: 5, col: 3, rowSpan: 1, colSpan: 1, size: 'sm' },
+  { id: 8, row: 5, col: 4, rowSpan: 4, colSpan: 3, size: 'lg' },
+  { id: 9, row: 6, col: 2, rowSpan: 2, colSpan: 2, size: 'sm' },
+  { id: 10, row: 6, col: 7, rowSpan: 2, colSpan: 3, size: 'md' },
+  { id: 11, row: 6, col: 10, rowSpan: 1, colSpan: 2, size: 'sm' },
+  { id: 12, row: 7, col: 10, rowSpan: 1, colSpan: 1, size: 'sm' },
+  { id: 13, row: 8, col: 8, rowSpan: 2, colSpan: 2, size: 'md' },
+  { id: 14, row: 9, col: 6, rowSpan: 1, colSpan: 2, size: 'sm' },
+  { id: 15, row: 10, col: 7, rowSpan: 1, colSpan: 1, size: 'sm' },
+  { id: 16, row: 4, col: 11, rowSpan: 2, colSpan: 2, size: 'sm' },
 ]
 
-// Map layout IDs to photo series
 const SERIES_MAP: Record<number, PhotoSeries> = {
   1: TEMP_PHOTOGRAPHY_SERIES[0],
   2: TEMP_PHOTOGRAPHY_SERIES[1],
   3: TEMP_PHOTOGRAPHY_SERIES[2],
   4: TEMP_PHOTOGRAPHY_SERIES[3],
   5: TEMP_PHOTOGRAPHY_SERIES[4],
+  6: TEMP_PHOTOGRAPHY_SERIES[0],
+  7: TEMP_PHOTOGRAPHY_SERIES[1],
+  8: TEMP_PHOTOGRAPHY_SERIES[2],
+  9: TEMP_PHOTOGRAPHY_SERIES[3],
+  10: TEMP_PHOTOGRAPHY_SERIES[4],
+  11: TEMP_PHOTOGRAPHY_SERIES[0],
+  12: TEMP_PHOTOGRAPHY_SERIES[1],
+  13: TEMP_PHOTOGRAPHY_SERIES[2],
+  14: TEMP_PHOTOGRAPHY_SERIES[3],
+  15: TEMP_PHOTOGRAPHY_SERIES[4],
+  16: TEMP_PHOTOGRAPHY_SERIES[0],
 }
 
 // Combine layout with series data
@@ -94,7 +114,7 @@ const lightboxIndex = ref(0)
 
 function openLightbox(seriesIndex: number) {
   activeSeries.value = seriesIndex
-  lightboxIndex.value = 0  // Start at first image in series
+  lightboxIndex.value = 0 
 }
 
 function closeLightbox() {
