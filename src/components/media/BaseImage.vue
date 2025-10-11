@@ -13,7 +13,7 @@
     @click="handleImageClick"
   >
     <img
-      v-show="shouldLoad"
+      v-if="shouldLoad"
       ref="imgRef"
       class="base-image__img"
       :src="imageSrc"
@@ -101,28 +101,28 @@ interface Props {
   objectFit?: ObjectFit
   lazyLoad?: boolean
   showCaption?: boolean
-  expandable?: boolean  // NEW: Enable click-to-expand
+  expandable?: boolean  
 }
 
 const props = withDefaults(defineProps<Props>(), {
   objectFit: 'cover',
   lazyLoad: true,
   showCaption: false,
-  expandable: false
+  expandable: false,
 })
 
 const emit = defineEmits<{
   load: []
   error: [error: Event]
-  expand: []  // NEW: Emit when expanded
-  collapse: []  // NEW: Emit when collapsed
+  expand: []
+  collapse: []
 }>()
 
 const containerRef = ref<HTMLElement | null>(null)
 const imgRef = ref<HTMLImageElement | null>(null)
 const isLoaded = ref(false)
 const shouldLoad = ref(!props.lazyLoad)
-const isExpanded = ref(false)  // NEW: Track modal state
+const isExpanded = ref(false)
 
 const imageSrc = computed(() => getAssetUrl(props.asset.path))
 
@@ -156,7 +156,6 @@ function handleError(error: Event) {
   emit('error', error)
 }
 
-// NEW: Modal handlers
 function handleImageClick() {
   if (props.expandable && isLoaded.value) {
     isExpanded.value = true
@@ -171,14 +170,12 @@ function closeModal() {
   emit('collapse')
 }
 
-// NEW: Keyboard handler for modal
 function handleKeydown(e: KeyboardEvent) {
   if (e.key === 'Escape' && isExpanded.value) {
     closeModal()
   }
 }
 
-// NEW: Format date helper
 function formatDate(date: string | Date | undefined) {
   if (!date) return ''
   return formatAssetDate(date)
@@ -258,8 +255,15 @@ onUnmounted(() => {
     object-fit: contain;
   }
 
-  &--fill &__img {
-    object-fit: fill;
+  &--fill {
+    aspect-ratio: auto !important;
+    height: 100%;
+
+    .base-image__img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
 
   &--none &__img {
@@ -334,12 +338,13 @@ onUnmounted(() => {
       display: block;
       line-height: var(--leading-relaxed);
     }
-  }
-
+  }  
   // Loading state
   &--loading &__img {
     opacity: 0;
   }
+
+  
 
   // Modal styles
   &__modal {

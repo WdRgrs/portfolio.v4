@@ -135,8 +135,8 @@ function decrementJob() {
 
 function buildCode(): string {
   return `<ExperienceCard
-  class="experience__card"
   v-for="(job, index) in duplicatedJobs"
+  class="experience__card"
   :key="\`\${job.company}-\${index}\`"
   :experience="job"
   :is-compact="true"
