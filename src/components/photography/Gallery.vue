@@ -12,9 +12,9 @@
         }"
         @click="openLightbox(idx)"
       > 
-        <div class="photo-gallery__image">
+        <!-- <div class="photo-gallery__image">
           {{ idx + 1 }}
-        </div>
+        </div> -->
         <BaseImage
           :asset="series.data.coverImage"
           object-fit="fill"
@@ -138,7 +138,6 @@ function closeLightbox() {
   }
   
   &__grid {
-    border: 1px solid rgba(255, 0, 0, 0.234);
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows: repeat(12, 1fr);
