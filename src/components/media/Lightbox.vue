@@ -1,8 +1,8 @@
 <template>
   <Teleport to="body">
     <Transition name="modal">
-      <div class="lightbox" @click.self="emit('close')">
-        <button class="lightbox__close" @click="emit('close')">×</button>
+      <div class="modal-overlay" @click.self="emit('close')">
+        <button class="modal-close-btn" @click="emit('close')">×</button>
         
         <!-- Series title (optional) -->
         <div v-if="seriesInfo?.title" class="lightbox__series-info">
@@ -77,7 +77,7 @@ import type { ImageAsset, PhotoSeries } from '@/types/assets'
 interface Props {
   images: ImageAsset[]
   currentIndex: number
-  seriesInfo?: Pick<PhotoSeries, 'title' | 'description'>  // Optional series metadata
+  seriesInfo?: Pick<PhotoSeries, 'title' | 'description'>
 }
 
 const props = defineProps<Props>()
@@ -114,43 +114,8 @@ onUnmounted(() => {
 
 <style scoped lang="scss">
 .lightbox {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.95);
-  backdrop-filter: blur(10px);
-  z-index: var(--z-modal);
-  display: grid;
-  place-items: center;
-  padding: var(--space-8);
-  overflow-y: auto;
-
-  @include mobile {
-    padding: var(--space-4);
-  }
-
-  &__close {
-    position: fixed;
-    top: var(--space-6);
-    right: var(--space-6);
-    z-index: calc(var(--z-modal) + 1);
-    width: 48px;
-    height: 48px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: var(--radius-md);
-    color: white;
-    font-size: var(--text-3xl);
-    cursor: pointer;
-    display: grid;
-    place-items: center;
-    transition: all 0.2s ease;
-    
-    &:hover {
-      background: rgba(255, 255, 255, 0.2);
-      border-color: rgba(255, 255, 255, 0.5);
-    }
-  }
-
+  // Note: .modal-overlay class comes from components.scss
+  
   &__series-info {
     position: absolute;
     top: var(--space-8);
@@ -171,7 +136,7 @@ onUnmounted(() => {
     }
 
     @include mobile {
-      display: none;  // Hide on mobile to save space
+      display: none;
     }
   }
 
@@ -184,13 +149,14 @@ onUnmounted(() => {
 
   &__caption {
     position: absolute;
-    bottom: calc(var(--space-20) + var(--space-8));  // Above thumbnails
+    bottom: calc(var(--space-20) + var(--space-8));
     left: 50%;
+    bottom: 10%;
     transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.7);
+    background: var(--color-shadow);
     padding: var(--space-3) var(--space-5);
     border-radius: var(--radius-md);
-    color: white;
+    color: var(--color-text-muted);
     text-align: center;
     max-width: 600px;
 
@@ -208,7 +174,7 @@ onUnmounted(() => {
     }
 
     @include mobile {
-      bottom: var(--space-8);
+      width: 100%;
       max-width: 90vw;
     }
   }
@@ -218,21 +184,21 @@ onUnmounted(() => {
     position: fixed;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    color: white;
-    font-size: var(--text-4xl);
+    background: var(--color-surface-1);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-round);
+    color: var(--color-primary);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
     width: 60px;
     height: 60px;
-    border-radius: var(--radius-round);
     cursor: pointer;
-    display: grid;
-    place-items: center;
     transition: all 0.2s ease;
     
     &:hover {
-      background: rgba(255, 255, 255, 0.2);
-      border-color: rgba(255, 255, 255, 0.5);
+      background: var(--color-surface-3);
+      border-color: var(--color-secondary);
+      color: var(--color-secondary);
     }
 
     @include mobile {
@@ -263,8 +229,8 @@ onUnmounted(() => {
     top: var(--space-8);
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
+    background: var(--color-surface-2);
+    color: var(--color-text-secondary);
     padding: var(--space-2) var(--space-4);
     border-radius: var(--radius-md);
     font-family: var(--font-mono);
@@ -281,12 +247,8 @@ onUnmounted(() => {
     max-width: 90vw;
     overflow-x: auto;
     padding: var(--space-2);
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--color-shadow);
     border-radius: var(--radius-md);
-
-    @include mobile {
-      bottom: var(--space-4);
-    }
   }
 
   &__thumbnail {
@@ -314,7 +276,7 @@ onUnmounted(() => {
     }
 
     &--active {
-      border-color: white;
+      border-color: var(--color-info);
       
       img {
         opacity: 1;
@@ -326,16 +288,5 @@ onUnmounted(() => {
       height: 45px;
     }
   }
-}
-
-// Modal transitions
-.modal-enter-active,
-.modal-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.modal-enter-from,
-.modal-leave-to {
-  opacity: 0;
 }
 </style>

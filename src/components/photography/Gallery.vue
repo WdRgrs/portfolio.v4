@@ -203,7 +203,6 @@ function closeLightbox() {
       transform: scale(1.01);
     }
     
-    // Size-specific shadows for depth
     &--sm {
       box-shadow: 0 1px 4px var(--color-shadow);
     }
@@ -230,87 +229,8 @@ function closeLightbox() {
     padding: 0;
     border: none;
   }
-
-  // Modal styles
-  &__modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(10px);
-    z-index: var(--z-modal);
-    display: grid;
-    place-items: center;
-    padding: var(--space-8);
-    overflow-y: auto;
-
-    @include mobile {
-      padding: var(--space-4);
-    }
-  }
-
-  &__modal-close {
-    position: fixed;
-    top: var(--space-6);
-    right: var(--space-6);
-    z-index: calc(var(--z-modal) + 1);
-    width: 48px;
-    height: 48px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: var(--radius-md);
-    color: white;
-    font-size: var(--text-3xl);
-    cursor: pointer;
-    display: grid;
-    place-items: center;
-    transition: all 0.2s ease;
-    
-    &:hover {
-      background: rgba(255, 255, 255, 0.2);
-      border-color: rgba(255, 255, 255, 0.5);
-    }
-
-    @include mobile {
-      top: var(--space-4);
-      right: var(--space-4);
-      width: 40px;
-      height: 40px;
-    }
-  }
-
-  &__modal-content {
-    max-width: 90vw;
-    max-height: 90vh;
-    position: relative;
-  }
-
-  &__modal-image {
-    border-radius: var(--radius-lg);
-    max-width: 100%;
-    max-height: 90vh;
-    object-fit: contain;
-  }
 }
 
-// Modal transitions
-.modal-enter-active,
-.modal-leave-active {
-  transition: opacity 0.3s ease;
-  
-  .photo-gallery__modal-content {
-    transition: transform 0.3s ease, opacity 0.3s ease;
-  }
-}
-
-.modal-enter-from,
-.modal-leave-to {
-  opacity: 0;
-  
-  .photo-gallery__modal-content {
-    transform: scale(0.9);
-    opacity: 0;
-  }
-}
 
 // Respect reduced motion
 @media (prefers-reduced-motion: reduce) {
@@ -321,16 +241,6 @@ function closeLightbox() {
       &:hover {
         transform: none;
       }
-    }
-  }
-  
-  .modal-enter-active,
-  .modal-leave-active {
-    transition: none;
-    
-    .photo-gallery__modal-content {
-      transition: none;
-      transform: none;
     }
   }
 }
