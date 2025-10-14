@@ -5,6 +5,7 @@ export interface BaseAsset {
   id: string
   path: string // preview
   alt: string
+  omit?: boolean
   title?: string
   description?: string
   date?: string | Date

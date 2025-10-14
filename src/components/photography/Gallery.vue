@@ -12,12 +12,14 @@
         }"
         @click="openLightbox(idx)"
       > 
+        <div class="photo-gallery__image">
+          {{ idx + 1 }}
+        </div>
         <BaseImage
           :asset="series.data.coverImage"
           object-fit="fill"
-          :lazy-load="true"
+          lazy-load
           aspect-ratio="auto"
-          class="photo-gallery__image"
         />
         
         <!-- Series indicator badge -->
@@ -40,11 +42,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import BaseImage from '@/components/media/BaseImage.vue'
 import Lightbox from '@/components/media/Lightbox.vue'
 import type { ImageAsset, PhotoSeries } from '@/types/assets'
-import { TEMP_PHOTOGRAPHY_SERIES } from '@/assets/photography'
+import { PHOTOGRAPHY_SERIES } from '@/assets/photography'
 
 interface LayoutConfig {
   id: number
@@ -63,40 +65,41 @@ interface GallerySeries {
 
 const GALLERY_LAYOUT: LayoutConfig[] = [
   { id: 1, row: 1, col: 6, rowSpan: 1, colSpan: 2, size: 'sm' },
-  { id: 2, row: 2, col: 5, rowSpan: 2, colSpan: 2, size: 'md' },
+  { id: 2, row: 2, col: 5, rowSpan: 3, colSpan: 2, size: 'md' },
   { id: 3, row: 2, col: 7, rowSpan: 1, colSpan: 2, size: 'sm' },
   { id: 4, row: 3, col: 7, rowSpan: 3, colSpan: 4, size: 'lg' },
-  { id: 5, row: 3, col: 11, rowSpan: 1, colSpan: 1, size: 'sm' },
-  { id: 6, row: 4, col: 4, rowSpan: 1, colSpan: 2, size: 'sm' },
-  { id: 7, row: 5, col: 3, rowSpan: 1, colSpan: 1, size: 'sm' },
-  { id: 8, row: 5, col: 4, rowSpan: 4, colSpan: 3, size: 'lg' },
-  { id: 9, row: 6, col: 2, rowSpan: 2, colSpan: 2, size: 'sm' },
+  { id: 5, row: 4, col: 11, rowSpan: 2, colSpan: 2, size: 'md' },
+  { id: 6, row: 3, col: 3, rowSpan: 2, colSpan: 2, size: 'md' },
+  { id: 7, row: 5, col: 1, rowSpan: 2, colSpan: 3, size: 'md' },
+  { id: 8, row: 5, col: 4, rowSpan: 3, colSpan: 3, size: 'lg' },
+  { id: 9, row: 7, col: 2, rowSpan: 2, colSpan: 2, size: 'md' },
   { id: 10, row: 6, col: 7, rowSpan: 2, colSpan: 3, size: 'md' },
-  { id: 11, row: 6, col: 10, rowSpan: 1, colSpan: 2, size: 'sm' },
-  { id: 12, row: 7, col: 10, rowSpan: 1, colSpan: 1, size: 'sm' },
-  { id: 13, row: 8, col: 8, rowSpan: 2, colSpan: 2, size: 'md' },
-  { id: 14, row: 9, col: 6, rowSpan: 1, colSpan: 2, size: 'sm' },
-  { id: 15, row: 10, col: 7, rowSpan: 1, colSpan: 1, size: 'sm' },
-  { id: 16, row: 4, col: 11, rowSpan: 2, colSpan: 2, size: 'sm' },
+  { id: 11, row: 8, col: 4, rowSpan: 2, colSpan: 4, size: 'lg' },
+  { id: 12, row: 6, col: 10, rowSpan: 2, colSpan: 3, size: 'md' },
+  { id: 13, row: 8, col: 8, rowSpan: 2, colSpan: 3, size: 'md' },
+  { id: 14, row: 10, col: 5, rowSpan: 1, colSpan: 3, size: 'md' },
+  { id: 15, row: 10, col: 8, rowSpan: 2, colSpan: 1, size: 'md' },
+  { id: 16, row: 11, col: 6, rowSpan: 2, colSpan: 2, size: 'md' },
 ]
 
 const SERIES_MAP: Record<number, PhotoSeries> = {
-  1: TEMP_PHOTOGRAPHY_SERIES[0],
-  2: TEMP_PHOTOGRAPHY_SERIES[1],
-  3: TEMP_PHOTOGRAPHY_SERIES[2],
-  4: TEMP_PHOTOGRAPHY_SERIES[3],
-  5: TEMP_PHOTOGRAPHY_SERIES[4],
-  6: TEMP_PHOTOGRAPHY_SERIES[0],
-  7: TEMP_PHOTOGRAPHY_SERIES[1],
-  8: TEMP_PHOTOGRAPHY_SERIES[2],
-  9: TEMP_PHOTOGRAPHY_SERIES[3],
-  10: TEMP_PHOTOGRAPHY_SERIES[4],
-  11: TEMP_PHOTOGRAPHY_SERIES[0],
-  12: TEMP_PHOTOGRAPHY_SERIES[1],
-  13: TEMP_PHOTOGRAPHY_SERIES[2],
-  14: TEMP_PHOTOGRAPHY_SERIES[3],
-  15: TEMP_PHOTOGRAPHY_SERIES[4],
-  16: TEMP_PHOTOGRAPHY_SERIES[0],
+  1: PHOTOGRAPHY_SERIES[0],
+  2: PHOTOGRAPHY_SERIES[8],
+  3: PHOTOGRAPHY_SERIES[7],
+  4: PHOTOGRAPHY_SERIES[3],
+  5: PHOTOGRAPHY_SERIES[13],
+  6: PHOTOGRAPHY_SERIES[1],
+  7: PHOTOGRAPHY_SERIES[6],
+  8: PHOTOGRAPHY_SERIES[4],
+  9: PHOTOGRAPHY_SERIES[5],
+  10: PHOTOGRAPHY_SERIES[9],
+  11: PHOTOGRAPHY_SERIES[10],
+  12: PHOTOGRAPHY_SERIES[11],
+  13: PHOTOGRAPHY_SERIES[12],
+  15: PHOTOGRAPHY_SERIES[14],
+  14: PHOTOGRAPHY_SERIES[2],
+  16: PHOTOGRAPHY_SERIES[15],
+
 }
 
 // Combine layout with series data
@@ -135,6 +138,7 @@ function closeLightbox() {
   }
   
   &__grid {
+    border: 1px solid rgba(255, 0, 0, 0.234);
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows: repeat(12, 1fr);
@@ -144,7 +148,7 @@ function closeLightbox() {
     width: 100%;
 
     @include laptop {
-      max-width: 1200px;
+      // max-width: 1200px;
     }
 
     @include tablet {
@@ -221,13 +225,19 @@ function closeLightbox() {
   }
 
   &__image {
+    position: absolute;
+    z-index: 23 ;
+    text-align: center;
+    align-items: center;
+    font-size: 4rem;
+    color: red;
     width: 100%;
     height: 100%;
-    display: block;
-    object-fit: cover;
+    // display: block;
+    // object-fit: cover;
     margin: 0;
     padding: 0;
-    border: none;
+    // border: none;
   }
 }
 
