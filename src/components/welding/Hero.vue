@@ -25,7 +25,7 @@
     <div class="weld-hero__content">
       <h1 class="weld-hero__title">{{ heroImage.title }}</h1>
       
-      <blockquote v-if="quote" class="weld-hero__quote">
+      <!-- <blockquote v-if="quote" class="weld-hero__quote">
         <p class="weld-hero__quote-text">{{ quote.text }}</p>
         <cite v-if="quote.author" class="weld-hero__quote-author">
           — {{ quote.author }}
@@ -34,7 +34,7 @@
 
       <p v-if="heroImage.description" class="weld-hero__description">
         {{ heroImage.description }}
-      </p>
+      </p> -->
     </div>
 
     <!-- Scroll indicator -->
@@ -73,6 +73,8 @@ const handleImageLoad = () => {
 @use "sass:math";
 
 .weld-hero {
+  color-scheme: light;
+
   position: relative;
   width: 100%;
   height: 100vh;

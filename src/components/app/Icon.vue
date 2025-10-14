@@ -2,12 +2,11 @@
   <component 
     :is="parseComponent"
     class="icon"
-    :stroke="color"
+    :color="color"
     :size="parseSize"
     :stroke-width="3"
   />
 </template>
-
 <script setup lang="ts">
 import { computed } from 'vue'
 import { 
@@ -20,9 +19,10 @@ import {
   SunMoon,
   Grip,
   LayoutGrid,
+  Maximize2
 } from 'lucide-vue-next';
 
-type BtnIcons = 'link' | 'list' | 'lightbulb' | 'chevron-down' | 'moon' | 'sun' | 'sun-moon' | 'grip' | 'grid'
+type BtnIcons = 'link' | 'list' | 'lightbulb' | 'chevron-down' | 'moon' | 'sun' | 'sun-moon' | 'grip' | 'grid' | 'expand'
 type CompanyIcons = 'github' | 'linkedin' | 'instagram'
 
 export type IconType = BtnIcons | CompanyIcons
@@ -36,7 +36,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   name: 'link',
-  color: 'red',
+  color: 'var(--color-primary)',
   size: 'md'
 })
 
@@ -66,6 +66,8 @@ const parseSize = computed(() => {
     
 const parseComponent = computed(() => {
   switch (props.name) { 
+    case 'expand':
+      return Maximize2
     case 'grid':
       return LayoutGrid
     case 'grip':

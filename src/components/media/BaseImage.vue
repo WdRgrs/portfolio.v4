@@ -33,9 +33,7 @@
 
     <!-- Expand indicator -->
     <div v-if="expandable" class="base-image__expand-indicator">
-      <svg class="base-image__expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <Icon name="expand" color="var(--color-accent)" />
     </div>
 
     <!-- Optional caption (only shown when not expandable) -->
@@ -95,6 +93,7 @@ import { useIntersectionObserver } from '@vueuse/core'
 import { getAssetUrl } from '@/utils/assets'
 import { formatAssetDate } from '@/utils/format'
 import type { ImageAsset, AspectRatio, ObjectFit } from '@/types/assets'
+import Icon from '@/components/app/Icon.vue' 
 
 interface Props {
   asset: ImageAsset
@@ -285,7 +284,7 @@ onUnmounted(() => {
     right: var(--space-3);
     width: 32px;
     height: 32px;
-    background: rgba(0, 0, 0, 0.6);
+    background: var(--color-shadow);
     border-radius: var(--radius-sm);
     display: grid;
     place-items: center;
@@ -298,7 +297,6 @@ onUnmounted(() => {
   &__expand-icon {
     width: 20px;
     height: 20px;
-    color: white;
   }
 
   &__caption {

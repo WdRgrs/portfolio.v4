@@ -12,6 +12,7 @@
           style="transform: rotate(45deg);"
           name='grip'
           size="lg"
+          color="var(--color-text-muted)"
         />
       </button>
       
@@ -24,6 +25,7 @@
         <Icon 
           name='grip'
           size="xl"
+          color="var(--color-text-muted)"
         />
       </button>
     </div>
@@ -46,8 +48,8 @@
       > 
         <BaseImage
           :asset="series.data.coverImage"
-          object-fit="fill"
-          lazy-load
+          objectFit="fill"
+          lazyLoad
           aspect-ratio="auto"
         />
         
@@ -70,7 +72,7 @@
       >
         <BaseImage
           :asset="image"
-          object-fit="cover"
+          object-fit="fill"
           lazy-load
           aspect-ratio="1:1"
         />
@@ -308,48 +310,27 @@ function closeImageLightbox() {
 
     &--simple {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: var(--space-4);
+      grid-template-columns: repeat(12, 1fr);
+      grid-auto-rows: 320px;
+      gap: var(--space-2);
       padding: var(--space-2);
 
       @include tablet {
-        display: grid !important;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: var(--space-3);
-        max-height: none;
+        grid-template-columns: repeat(6, 1fr);
+        grid-auto-rows: 180px;
+        gap: var(--space-2);
       }
 
       @include mobile {
-        display: grid !important;
         grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 140px;
         gap: var(--space-2);
-        max-height: none;
-      }
-
-      /* Custom scrollbar */
-      &::-webkit-scrollbar {
-        // width: 8px;
-      }
-
-      &::-webkit-scrollbar-track {
-        background: var(--color-surface-1);
-        border-radius: var(--radius-sm);
-      }
-
-      &::-webkit-scrollbar-thumb {
-        background: var(--color-border);
-        border-radius: var(--radius-sm);
-
-        &:hover {
-          background: var(--color-text-muted);
-        }
       }
     }
   }
 
   &__grid-item {
     position: relative;
-    aspect-ratio: 1 / 1;
     cursor: pointer;
     overflow: hidden;
     border-radius: var(--radius-sm);
@@ -357,6 +338,72 @@ function closeImageLightbox() {
     box-shadow: 0 2px 8px var(--color-shadow);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     padding: var(--space-1);
+
+    &:nth-child(9n + 1) {
+      grid-column: span 4;
+    }
+    
+    &:nth-child(9n + 2) {
+      grid-column: span 5;
+    }
+    
+    &:nth-child(9n + 3) {
+      grid-column: span 3;
+    }
+    
+    &:nth-child(9n + 4) {
+      grid-column: span 3;
+    }
+    
+    &:nth-child(9n + 5) {
+      grid-column: span 4;
+    }
+    
+    &:nth-child(9n + 6) {
+      grid-column: span 5;
+    }
+    
+    &:nth-child(9n + 7) {
+      grid-column: span 5;
+    }
+    
+    &:nth-child(9n + 8) {
+      grid-column: span 3;
+    }
+    
+    &:nth-child(9n + 9) {
+      grid-column: span 4;
+    }
+
+    @include tablet {
+      &:nth-child(6n + 1) {
+        grid-column: span 4;
+      }
+      
+      &:nth-child(6n + 2) {
+        grid-column: span 2;
+      }
+      
+      &:nth-child(6n + 3) {
+        grid-column: span 3;
+      }
+      
+      &:nth-child(6n + 4) {
+        grid-column: span 3;
+      }
+      
+      &:nth-child(6n + 5) {
+        grid-column: span 2;
+      }
+      
+      &:nth-child(6n + 6) {
+        grid-column: span 4;
+      }
+    }
+
+    @include mobile {
+      grid-column: span 2 !important;
+    }
 
     &:hover {
       transform: translateY(-4px);
@@ -366,11 +413,6 @@ function closeImageLightbox() {
 
     &:active {
       transform: translateY(-2px);
-    }
-
-    @include mobile {
-      /* Ensure consistent sizing in landscape */
-      min-height: 0;
     }
   }
 
