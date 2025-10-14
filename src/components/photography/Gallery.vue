@@ -123,7 +123,7 @@ interface GallerySeries {
   data: PhotoSeries
 }
 
-const viewMode = ref<'masonry' | 'grid'>('masonry')
+const viewMode = ref<'masonry' | 'grid'>('grid')
 
 const TABLET_BREAKPOINT = 768
 const MOBILE_BREAKPOINT = 480
@@ -323,7 +323,7 @@ function closeImageLightbox() {
 
       @include mobile {
         grid-template-columns: repeat(2, 1fr);
-        grid-auto-rows: 140px;
+        grid-auto-rows: 240px;
         gap: var(--space-2);
       }
     }
