@@ -39,13 +39,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useGitHubStore } from '@/stores/github'
+import { ref, computed } from 'vue'
 import PageSection from '@/components/page/Section.vue'
 import { DEVLOG_FILTERS, getSortedEntries } from '@/config/devlog'
 import type { ProjectType } from '@/types/devlog'
 
-const githubStore = useGitHubStore()
 const filterType = ref<ProjectType | 'all'>('all')
 
 const sortedEntries = getSortedEntries()
@@ -57,26 +55,6 @@ const filteredEntries = computed(() => {
   return sortedEntries.filter(entry => 
     entry.types.includes(filterType.value as ProjectType)
   )
-})
-
-// github stats
-onMounted(async () => {
-  const repoEntries = sortedEntries.filter(entry => entry.repoId)
-  
-  for (const entry of repoEntries) {
-    if (entry.repoId) {
-      const [owner, repo] = entry.repoId.split('/')
-      const existingStats = githubStore.getRepoStats(entry.repoId)
-      
-      if (!existingStats) {
-        try {
-          await githubStore.fetchRepoStats(entry.repoId, owner, repo)
-        } catch (error) {
-          console.error(`Failed to fetch stats for ${entry.repoId}:`, error)
-        }
-      }
-    }
-  }
 })
 </script>
 

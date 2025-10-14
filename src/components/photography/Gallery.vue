@@ -1,6 +1,38 @@
 <template>
   <div class="photo-gallery">
-    <div class="photo-gallery__grid">
+    <!-- View Toggle -->
+    <div class="photo-gallery__controls">
+      <button 
+        class="photo-gallery__toggle"
+        :class="{ 'photo-gallery__toggle--active': viewMode === 'masonry' }"
+        @click="viewMode = 'masonry'"
+        aria-label="Masonry view"
+      >
+        <Icon 
+          style="transform: rotate(45deg);"
+          name='grip'
+          size="lg"
+        />
+      </button>
+      
+      <button 
+        class="photo-gallery__toggle"
+        :class="{ 'photo-gallery__toggle--active': viewMode === 'grid' }"
+        @click="viewMode = 'grid'"
+        aria-label="Grid view"
+      >
+        <Icon 
+          name='grip'
+          size="xl"
+        />
+      </button>
+    </div>
+
+    <!-- Masonry View (Original - showing cover images) -->
+    <div 
+      v-if="viewMode === 'masonry'"
+      class="photo-gallery__grid photo-gallery__grid--masonry"
+    >
       <div
         v-for="(series, idx) in gallerySeries"
         :key="series.id"
@@ -12,9 +44,6 @@
         }"
         @click="openLightbox(idx)"
       > 
-        <!-- <div class="photo-gallery__image">
-          {{ idx + 1 }}
-        </div> -->
         <BaseImage
           :asset="series.data.coverImage"
           object-fit="fill"
@@ -22,31 +51,60 @@
           aspect-ratio="auto"
         />
         
-        <!-- Series indicator badge -->
         <div v-if="series.data.images.length > 1" class="photo-gallery__series-badge">
           <span>{{ series.data.images.length }}</span>
         </div>
       </div>
     </div>
+
+    <!-- Simple Grid View (All Images) -->
+    <div 
+      v-else
+      class="photo-gallery__grid photo-gallery__grid--simple"
+    >
+      <div
+        v-for="(image, idx) in allImages"
+        :key="`image-${idx}`"
+        class="photo-gallery__grid-item"
+        @click="openImageLightbox(idx)"
+      >
+        <BaseImage
+          :asset="image"
+          object-fit="cover"
+          lazy-load
+          aspect-ratio="1:1"
+        />
+      </div>
+    </div>
     
-    <!-- Lightbox shows images from selected series -->
+    <!-- Lightbox for Series (Masonry view) -->
     <Lightbox
-      v-if="activeSeries !== null"
+      v-if="activeSeries !== null && viewMode === 'masonry'"
       :images="gallerySeries[activeSeries].data.images"
       :current-index="lightboxIndex"
       :series-info="gallerySeries[activeSeries].data"
       @close="closeLightbox"
       @navigate="lightboxIndex = $event"
-    />  
+    />
+    
+    <!-- Lightbox for Individual Images (Grid view) -->
+    <Lightbox
+      v-if="activeImageIndex !== null && viewMode === 'grid'"
+      :images="allImages"
+      :current-index="activeImageIndex"
+      @close="closeImageLightbox"
+      @navigate="activeImageIndex = $event"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import BaseImage from '@/components/media/BaseImage.vue'
 import Lightbox from '@/components/media/Lightbox.vue'
 import type { ImageAsset, PhotoSeries } from '@/types/assets'
 import { PHOTOGRAPHY_SERIES } from '@/assets/photography'
+import Icon from '../app/Icon.vue'
 
 interface LayoutConfig {
   id: number
@@ -62,6 +120,32 @@ interface GallerySeries {
   layout: LayoutConfig
   data: PhotoSeries
 }
+
+const viewMode = ref<'masonry' | 'grid'>('masonry')
+
+const TABLET_BREAKPOINT = 768
+const MOBILE_BREAKPOINT = 480
+
+const isMobileOrTablet = () => {
+  return window.innerWidth <= TABLET_BREAKPOINT
+}
+
+const handleResize = () => {
+  if (isMobileOrTablet()) {
+    viewMode.value = 'grid'
+  }
+}
+
+onMounted(() => {
+  if (isMobileOrTablet()) {
+    viewMode.value = 'grid'
+  }
+  window.addEventListener('resize', handleResize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+})
 
 const GALLERY_LAYOUT: LayoutConfig[] = [
   { id: 1, row: 1, col: 6, rowSpan: 1, colSpan: 2, size: 'sm' },
@@ -99,10 +183,8 @@ const SERIES_MAP: Record<number, PhotoSeries> = {
   15: PHOTOGRAPHY_SERIES[14],
   14: PHOTOGRAPHY_SERIES[2],
   16: PHOTOGRAPHY_SERIES[15],
-
 }
 
-// Combine layout with series data
 const gallerySeries = computed<GallerySeries[]>(() => {
   return GALLERY_LAYOUT.map(layout => ({
     id: `series-${layout.id}`,
@@ -111,9 +193,21 @@ const gallerySeries = computed<GallerySeries[]>(() => {
   }))
 })
 
-// Lightbox state
+// Flatten all images from all series
+const allImages = computed<ImageAsset[]>(() => {
+  const images: ImageAsset[] = []
+  PHOTOGRAPHY_SERIES.forEach(series => {
+    images.push(...series.images)
+  })
+  return images
+})
+
+// Lightbox state for series view
 const activeSeries = ref<number | null>(null)
 const lightboxIndex = ref(0)
+
+// Lightbox state for grid view (individual images)
+const activeImageIndex = ref<number | null>(null)
 
 function openLightbox(seriesIndex: number) {
   activeSeries.value = seriesIndex
@@ -124,6 +218,14 @@ function closeLightbox() {
   activeSeries.value = null
   lightboxIndex.value = 0
 }
+
+function openImageLightbox(imageIndex: number) {
+  activeImageIndex.value = imageIndex
+}
+
+function closeImageLightbox() {
+  activeImageIndex.value = null
+}
 </script>
 
 <style scoped lang="scss">
@@ -131,51 +233,144 @@ function closeLightbox() {
   width: 100%;
   padding: var(--space-8) var(--space-6);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   
   @include mobile {
     padding: var(--space-5) var(--space-3);
   }
-  
-  &__grid {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: repeat(12, 1fr);
-    gap: var(--space-2);
-    max-width: 1400px;
-    aspect-ratio: 1 / 1;
-    width: 100%;
 
-    @include laptop {
-      // max-width: 1200px;
-    }
+  &__controls {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+    padding: var(--space-2);
+    background: var(--color-surface-1);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
 
     @include tablet {
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: auto;
-      gap: var(--space-3);
-      aspect-ratio: auto;
+      display: none;
     }
 
     @include mobile {
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: auto;
+      display: none;
+    }
+  }
+
+  &__toggle {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--color-surface-2);
+      color: var(--color-text);
+    }
+
+    &--active {
+      background: var(--color-primary);
+      color: var(--color-text-inverse);
+
+      &:hover {
+        background: var(--color-primary);
+        filter: brightness(1.1);
+      }
+    }
+  }
+  
+  &__grid {
+    width: 100%;
+    max-width: 1400px;
+
+    &--masonry {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: repeat(12, 1fr);
       gap: var(--space-2);
-      aspect-ratio: auto;
-      
-      .photo-gallery__frame {
-        grid-column: auto !important;
-        grid-row: auto !important;
-        
-        &--sm {
-          grid-column: span 1 !important;
-        }
-        
-        &--md,
-        &--lg {
-          grid-column: span 2 !important;
+      aspect-ratio: 1 / 1;
+
+      @include tablet {
+        display: none;
+      }
+
+      @include mobile {
+        display: none;
+      }
+    }
+
+    &--simple {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-4);
+      padding: var(--space-2);
+
+      @include tablet {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: var(--space-3);
+        max-height: none;
+      }
+
+      @include mobile {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-2);
+        max-height: none;
+      }
+
+      /* Custom scrollbar */
+      &::-webkit-scrollbar {
+        // width: 8px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: var(--color-surface-1);
+        border-radius: var(--radius-sm);
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: var(--color-border);
+        border-radius: var(--radius-sm);
+
+        &:hover {
+          background: var(--color-text-muted);
         }
       }
+    }
+  }
+
+  &__grid-item {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-1);
+    box-shadow: 0 2px 8px var(--color-shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: var(--space-1);
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+    }
+
+    &:active {
+      transform: translateY(-2px);
+    }
+
+    @include mobile {
+      /* Ensure consistent sizing in landscape */
+      min-height: 0;
     }
   }
 
@@ -187,14 +382,8 @@ function closeLightbox() {
     background: var(--color-surface-1);
     box-shadow: 0 2px 8px var(--color-shadow);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    
     padding: var(--space-1);
     margin: var(--space-1);
-    background-color: var(--color-surface-1);
-
-    @include mobile {
-      aspect-ratio: 1 / 1;
-    }
 
     &:hover {
       transform: scale(1.02) rotate(0.3deg);
@@ -223,28 +412,28 @@ function closeLightbox() {
     }
   }
 
-  &__image {
+  &__series-badge {
     position: absolute;
-    z-index: 23 ;
-    text-align: center;
+    bottom: var(--space-3);
+    right: var(--space-3);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-family: var(--font-mono);
+    display: flex;
     align-items: center;
-    font-size: 4rem;
-    color: red;
-    width: 100%;
-    height: 100%;
-    // display: block;
-    // object-fit: cover;
-    margin: 0;
-    padding: 0;
-    // border: none;
+    gap: var(--space-1);
+    pointer-events: none;
   }
 }
 
-
-// Respect reduced motion
 @media (prefers-reduced-motion: reduce) {
   .photo-gallery {
-    &__frame {
+    &__frame,
+    &__grid-item,
+    &__toggle {
       transition: none;
       
       &:hover {
@@ -252,20 +441,5 @@ function closeLightbox() {
       }
     }
   }
-}
-.photo-gallery__series-badge {
-  position: absolute;
-  bottom: var(--space-3);
-  right: var(--space-3);
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
-  font-size: var(--text-xs);
-  font-family: var(--font-mono);
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  pointer-events: none;
 }
 </style>

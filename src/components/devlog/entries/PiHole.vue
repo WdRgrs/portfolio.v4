@@ -64,24 +64,14 @@
 
     <DevLogSection heading="Dashboard Overview">
       <div class="pihole__dashboard">
-        <BaseImage 
-          :asset="PIHOLE_IMAGES[0]"
-          expandable
-          class="pihole__dashboard-image"
-          alt="Pi-hole dashboard mobile view with query metrics"
-        />
+        <BaseImage :asset="PIHOLE_IMAGES[0]" expandable />
         
         <div class="pihole__dashboard-column">
           <p class="pihole__dashboard-text">
             The Pi-hole admin interface provides real-time visibility into network DNS traffic. The dashboard shows 
             query statistics, top blocked domains, and device-level breakdowns of network activity. 
           </p>
-          <BaseImage 
-            :asset="PIHOLE_IMAGES[1]"
-            expandable
-            class="pihole__dashboard-image"
-            alt="Pi-hole dashboard desktop view with detailed statistics"
-          />
+          <BaseImage :asset="PIHOLE_IMAGES[1]" expandable />
         </div>
       </div>
     </DevLogSection>
@@ -255,22 +245,6 @@ const githubStats = computed(() =>
       @include mobile {
         font-size: var(--text-xl) !important;
         margin: 0;
-      }
-    }
-
-    &-image {
-      width: 100%;
-      border-radius: var(--radius-md);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px var(--color-shadow);
-      }
-
-      .pihole__dashboard-column & {
-        flex: 1 1 auto;
-        object-fit: cover;
       }
     }
   }

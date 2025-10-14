@@ -48,11 +48,7 @@
     <!-- Game Design -->
     <DevLogSection heading="Game Design">
       <div class="devlog-feature">
-        <BaseImage
-          :asset="ALPHABITS_IMAGES[0]"
-          class="devlog-feature__image"
-          expandable
-        />
+        <BaseImage :asset="ALPHABITS_IMAGES[0]" expandable />
         <div class="devlog-feature__text">
           <p>
             The core mechanic: letters drop into a grid one at a time. You place them to form words 
@@ -66,12 +62,10 @@
       </div>
 
       <div class="devlog-gallery">
-        <BaseImage
-          v-for="image in [ALPHABITS_IMAGES[1], ALPHABITS_IMAGES[3]]"
+        <BaseImage v-for="image in [ALPHABITS_IMAGES[1], ALPHABITS_IMAGES[3]]"
           :key="image.id"
           :asset="image"
           expandable
-          class="devlog-gallery__item"
         />
       </div>
     </DevLogSection>
@@ -219,17 +213,14 @@ function openLink(url: string) {
   background: var(--color-surface-1);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
-
+  place-items: center;
+  
   @include tablet {
     grid-template-columns: 1fr;
   }
+  
   @include mobile {
     grid-template-columns: 1fr;
-  }
-
-  &__image {
-    position: sticky;
-    top: var(--space-4);
   }
 
   &__text {
@@ -251,16 +242,6 @@ function openLink(url: string) {
 
   @include mobile {
     grid-template-columns: 1fr;
-  }
-
-  &__item {
-    // cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px var(--color-shadow);
-    }
   }
 }
 
