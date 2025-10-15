@@ -15,6 +15,7 @@
             :src="`/resume/WadeRogers${page}.jpg`" 
             :alt="`Resume page ${page}`"
             loading="lazy"
+            @contextmenu.prevent
           />
           <a 
             href="/resume/WadeRogers.pdf" 

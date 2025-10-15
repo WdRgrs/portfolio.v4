@@ -15,6 +15,7 @@
           :src="getAssetUrl(currentImage.full || currentImage.path)"
           :alt="currentImage.alt"
           class="lightbox__image"
+          @contextmenu.prevent
         />
 
         <!-- Image caption -->
@@ -60,6 +61,7 @@
               <img 
                 :src="getAssetUrl(img.path)"
                 :alt="img.alt"
+                @contextmenu.prevent
               />
             </button>
           </div>

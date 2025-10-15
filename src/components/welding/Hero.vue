@@ -8,6 +8,7 @@
         :width="heroImage.width"
         :height="heroImage.height"
         @load="handleImageLoad"
+        @contextmenu.prevent
       />
       
       <!-- <div class="weld-hero__overlay"></div> -->

@@ -24,6 +24,7 @@
       :loading="lazyLoad ? 'lazy' : 'eager'"
       @load="handleLoad"
       @error="handleError"
+      @contextmenu.prevent
     />
     
     <!-- Loading placeholder -->
@@ -65,6 +66,7 @@
             class="base-image__modal-image"
             :src="fullSrc"
             :alt="asset.alt"
+            @contextmenu.prevent
           />
 
           <!-- Caption info in modal -->

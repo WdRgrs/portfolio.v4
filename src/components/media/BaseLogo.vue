@@ -14,6 +14,7 @@
       :width="computedWidth"
       :height="computedHeight"
       loading="eager"
+      @contextmenu.prevent
     />
   </div>
 </template>
