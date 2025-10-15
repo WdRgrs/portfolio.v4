@@ -317,19 +317,6 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     tags: ['lightning', 'storm', 'wind-turbine', 'weather', 'renewable-energy', 'kansas']
   },
   {
-    id: 'moose-00',
-    type: 'image',
-    path: 'photography/prev/moose_00.webp',
-    full: 'photography/full/moose_00.webp',
-    alt: 'Moose in snowy forest with frost-covered evergreens',
-    title: 'Winter Woods Wanderer',
-    description: 'A moose browses among frost-laden pines in a quiet winter landscape, where snow blankets the forest floor.',
-    date: '0',
-    width: 1600,
-    height: 2400,
-    tags: ['wildlife', 'moose', 'winter', 'forest', 'snow']
-  },
-  {
     id: 'moose-01',
     type: 'image',
     path: 'photography/prev/moose_01.webp',
@@ -342,6 +329,20 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     height: 1600,
     tags: ['wildlife', 'moose', 'winter', 'frost', 'forest']
   },
+  {
+    id: 'moose-00',
+    type: 'image',
+    path: 'photography/prev/moose_00.webp',
+    full: 'photography/full/moose_00.webp',
+    alt: 'Moose in snowy forest with frost-covered evergreens',
+    title: 'Winter Woods Wanderer',
+    description: 'A moose browses among frost-laden pines in a quiet winter landscape, where snow blankets the forest floor.',
+    date: '0',
+    width: 1600,
+    height: 2400,
+    tags: ['wildlife', 'moose', 'winter', 'forest', 'snow']
+  },
+
   {
     id: 'moose-02',
     omit: true,
@@ -563,10 +564,10 @@ export const PHOTOGRAPHY_SERIES: PhotoSeries[] = [
   {
     id: 'winter-wildlife',
     title: 'Winter Wildlife',
-    coverImage: PHOTOGRAPHY_IMAGES[23], // Moose in frost
+    coverImage: PHOTOGRAPHY_IMAGES[24], // Moose in frost
     images: [
-      PHOTOGRAPHY_IMAGES[23], // Moose 1
       PHOTOGRAPHY_IMAGES[24], // Moose 2
+      PHOTOGRAPHY_IMAGES[23], // Moose 1
       // PHOTOGRAPHY_IMAGES[25], // Deer in snow
     ],
     tags: ['wildlife', 'winter', 'forest', 'moose', 'deer', 'snow']
