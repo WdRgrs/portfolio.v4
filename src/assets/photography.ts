@@ -12,7 +12,9 @@ export const PHOTOGRAPHY_VIDEOS: VideoAsset[] = [
     date: '2023-06-26',
     width: 1920,
     height: 1080,
-    duration: 24
+    duration: 24,
+    region: 'WA',
+    location: undefined
   }
 ]
 
@@ -28,7 +30,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1599,
-    tags: ['urban', 'graffiti', 'bridge', 'street-art', 'austin']
+    tags: ['urban', 'graffiti', 'bridge', 'street-art', 'austin'],
+    region: 'TX',
+    location: 'Austin'
   },
   {
     id: 'austin-tracks-00',
@@ -41,7 +45,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1599,
-    tags: ['aerial', 'railroad', 'forest', 'drone', 'austin']
+    tags: ['aerial', 'railroad', 'forest', 'drone', 'austin'],
+    region: 'TX',
+    location: 'Austin'
   },
   {
     id: 'austin-tracks-01',
@@ -54,7 +60,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1599,
-    tags: ['aerial', 'infrastructure', 'railroad', 'roads', 'drone', 'austin']
+    tags: ['aerial', 'infrastructure', 'railroad', 'roads', 'drone', 'austin'],
+    region: 'TX',
+    location: 'Austin'
   },
   {
     id: 'austin-train-00',
@@ -67,7 +75,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1599,
-    tags: ['train', 'motion-blur', 'long-exposure', 'bridge', 'austin']
+    tags: ['train', 'motion-blur', 'long-exposure', 'bridge', 'austin'],
+    region: 'TX',
+    location: 'Austin'
   },
   {
     id: 'austin-train-01',
@@ -80,7 +90,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1599,
-    tags: ['train', 'sunset', 'motion-blur', 'bridge', 'austin']
+    tags: ['train', 'sunset', 'motion-blur', 'bridge', 'austin'],
+    region: 'TX',
+    location: 'Austin'
   },
   {
     id: 'bb-bear-sign-00',
@@ -93,7 +105,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1600,
-    tags: ['wilderness', 'safety', 'mountains', 'hiking', 'big-bend']
+    tags: ['wilderness', 'safety', 'mountains', 'hiking', 'big-bend'],
+    region: 'TX',
+    location: 'Big Bend National Park'
   },
   {
     id: 'bb-chisos-00',
@@ -106,7 +120,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1600,
-    tags: ['desert', 'mountains', 'big-bend', 'landscape', 'chisos']
+    tags: ['desert', 'mountains', 'big-bend', 'landscape', 'chisos'],
+    region: 'TX',
+    location: 'Chisos Mountains'
   },
   {
     id: 'bb-coyote-00',
@@ -119,7 +135,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1350,
-    tags: ['wildlife', 'coyote', 'desert', 'nature', 'big-bend']
+    tags: ['wildlife', 'coyote', 'desert', 'nature', 'big-bend'],
+    region: 'TX',
+    location: 'Big Bend National Park'
   },
   {
     id: 'bb-trail-sign-00',
@@ -132,7 +150,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 1600,
     height: 2400,
-    tags: ['hiking', 'conservation', 'mountains', 'signage', 'big-bend']
+    tags: ['hiking', 'conservation', 'mountains', 'signage', 'big-bend'],
+    region: 'TX',
+    location: 'Big Bend National Park'
   },
   {
     id: 'bonnie-weld-00',
@@ -145,7 +165,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1600,
-    tags: ['welding', 'workshop', 'industrial', 'craftsmanship']
+    tags: ['welding', 'workshop', 'industrial', 'craftsmanship'],
+    region: 'KS',
+    location: 'McDonald'
   },
   {
     id: 'catalina-buffalo-00',
@@ -158,7 +180,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1350,
-    tags: ['wildlife', 'bison', 'landscape', 'mountains', 'catalina-island']
+    tags: ['wildlife', 'bison', 'landscape', 'mountains', 'catalina-island'],
+    region: 'CA',
+    location: 'Catalina Island'
   },
   {
     id: 'catalina-sunrise-00',
@@ -171,7 +195,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1600,
-    tags: ['hiking', 'sunrise', 'silhouette', 'backpacking', 'catalina-island']
+    tags: ['hiking', 'sunrise', 'silhouette', 'backpacking', 'catalina-island'],
+    region: 'CA',
+    location: 'Catalina Island'
   },
   {
     id: 'crawdad-00',
@@ -184,7 +210,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1600,
-    tags: ['wildlife', 'crawfish', 'macro', 'nature', 'creek']
+    tags: ['wildlife', 'crawfish', 'macro', 'nature', 'creek'],
+    region: 'AR',
+    location: 'Eagle Rock Loop'
   },
   {
     id: 'crawdad-01',
@@ -197,7 +225,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1600,
-    tags: ['wildlife', 'crawfish', 'macro', 'close-up']
+    tags: ['wildlife', 'crawfish', 'macro', 'close-up'],
+    region: 'AR',
+    location: 'Eagle Rock Loop'
   },
   {
     id: 'dam-weld-00',
@@ -210,7 +240,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 1800,
     height: 2400,
-    tags: ['welding', 'sunset', 'industrial', 'silhouette', 'dam']
+    tags: ['welding', 'sunset', 'industrial', 'silhouette', 'dam'],
+    region: 'NV',
+    location: 'Hoover Dam'
   },
   {
     id: 'dam-weld-01',
@@ -223,7 +255,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1800,
-    tags: ['welding', 'infrastructure', 'dam', 'industrial']
+    tags: ['welding', 'infrastructure', 'dam', 'industrial'],
+    region: 'NV',
+    location: 'Hoover Dam'
   },
   {
     id: 'estes-frozen-lake-00',
@@ -236,7 +270,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1600,
-    tags: ['aerial', 'winter', 'mountains', 'lake', 'drone', 'estes-park']
+    tags: ['aerial', 'winter', 'mountains', 'lake', 'drone', 'estes-park'],
+    region: 'CO',
+    location: 'Estes Park'
   },
   {
     id: 'firework-00',
@@ -249,7 +285,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 1661,
     height: 1157,
-    tags: ['fireworks', 'night', 'celebration', 'abstract']
+    tags: ['fireworks', 'night', 'celebration', 'abstract'],
+    region: 'TX',
+    location: 'Vanderpool'
   },
   {
     id: 'firework-01',
@@ -262,7 +300,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 1522,
     height: 1015,
-    tags: ['fireworks', 'night', 'celebration', 'color']
+    tags: ['fireworks', 'night', 'celebration', 'color'],
+    region: 'TX',
+    location: 'Vanderpool'
   },
   {
     id: 'ha-snail-00',
@@ -275,7 +315,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1600,
-    tags: ['macro', 'snail', 'nature', 'close-up']
+    tags: ['macro', 'snail', 'nature', 'close-up'],
+    region: 'HI',
+    location: undefined
   },
   {
     id: 'kayak-00',
@@ -288,7 +330,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1350,
-    tags: ['kayak', 'lake', 'mountains', 'water-sports', 'peaceful']
+    tags: ['kayak', 'lake', 'mountains', 'water-sports', 'peaceful'],
+    region: 'ID',
+    location: undefined
   },
   {
     id: 'kayak-01',
@@ -301,7 +345,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1350,
-    tags: ['kayak', 'lake', 'mountains', 'adventure', 'blue-water']
+    tags: ['kayak', 'lake', 'mountains', 'adventure', 'blue-water'],
+    region: 'ID',
+    location: undefined
   },
   {
     id: 'ks-lightning-00',
@@ -314,7 +360,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1350,
-    tags: ['lightning', 'storm', 'wind-turbine', 'weather', 'renewable-energy', 'kansas']
+    tags: ['lightning', 'storm', 'wind-turbine', 'weather', 'renewable-energy', 'kansas'],
+    region: 'KS',
+    location: 'McDonald'
   },
   {
     id: 'moose-01',
@@ -327,7 +375,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1600,
-    tags: ['wildlife', 'moose', 'winter', 'frost', 'forest']
+    tags: ['wildlife', 'moose', 'winter', 'frost', 'forest'],
+    region: 'WY',
+    location: 'Medicine Bow'
   },
   {
     id: 'moose-00',
@@ -340,9 +390,10 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 1600,
     height: 2400,
-    tags: ['wildlife', 'moose', 'winter', 'forest', 'snow']
+    tags: ['wildlife', 'moose', 'winter', 'forest', 'snow'],
+    region: 'WY',
+    location: 'Medicine Bow'
   },
-
   {
     id: 'moose-02',
     omit: true,
@@ -355,7 +406,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1600,
-    tags: ['wildlife', 'deer', 'winter', 'forest', 'snow']
+    tags: ['wildlife', 'deer', 'winter', 'forest', 'snow'],
+    region: 'WY',
+    location: 'Medicine Bow'
   },
   {
     id: 'mountains-smoke-00',
@@ -368,7 +421,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1350,
-    tags: ['mountains', 'fog', 'atmosphere', 'landscape', 'moody']
+    tags: ['mountains', 'fog', 'atmosphere', 'landscape', 'moody'],
+    region: 'CO',
+    location: undefined
   },
   {
     id: 'penstock-00',
@@ -381,7 +436,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 1350,
     height: 2400,
-    tags: ['industrial', 'infrastructure', 'interior', 'architecture', 'penstock']
+    tags: ['industrial', 'infrastructure', 'interior', 'architecture', 'penstock'],
+    region: 'NV',
+    location: 'Hoover Dam'
   },
   {
     id: 'road-windmills-00',
@@ -394,7 +451,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1350,
-    tags: ['wind-turbine', 'renewable-energy', 'golden-hour', 'landscape', 'clouds']
+    tags: ['wind-turbine', 'renewable-energy', 'golden-hour', 'landscape', 'clouds'],
+    region: 'TX',
+    location: undefined
   },
   {
     id: 'saguaro-00',
@@ -407,7 +466,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1800,
-    tags: ['desert', 'saguaro', 'cactus', 'black-and-white', 'landscape']
+    tags: ['desert', 'saguaro', 'cactus', 'black-and-white', 'landscape'],
+    region: 'AZ',
+    location: undefined
   },
   {
     id: 'tent-death-valley-00',
@@ -420,7 +481,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1350,
-    tags: ['camping', 'desert', 'sunset', 'mountains', 'backpacking', 'death-valley']
+    tags: ['camping', 'desert', 'sunset', 'mountains', 'backpacking', 'death-valley'],
+    region: 'CA',
+    location: 'Death Valley'
   },
   {
     id: 'tent-palo-duro-00',
@@ -433,7 +496,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1600,
-    tags: ['camping', 'night', 'stars', 'moon', 'astrophotography', 'palo-duro']
+    tags: ['camping', 'night', 'stars', 'moon', 'astrophotography', 'palo-duro'],
+    region: 'TX',
+    location: 'Palo Duro Canyon'
   },
   {
     id: 'tent-polebridge-00',
@@ -446,7 +511,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1600,
-    tags: ['glamping', 'camping', 'stars', 'milky-way', 'night', 'astrophotography', 'montana']
+    tags: ['glamping', 'camping', 'stars', 'milky-way', 'night', 'astrophotography', 'montana'],
+    region: 'MT',
+    location: 'Polebridge'
   },
   {
     id: 'tetons-00',
@@ -459,7 +526,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1600,
-    tags: ['mountains', 'tetons', 'reflection', 'autumn', 'river']
+    tags: ['mountains', 'tetons', 'reflection', 'autumn', 'river'],
+    region: 'WY',
+    location: 'Grand Teton National Park'
   },
   {
     id: 'winter-farm-00',
@@ -472,7 +541,9 @@ export const PHOTOGRAPHY_IMAGES: ImageAsset[] = [
     date: '0',
     width: 2400,
     height: 1599,
-    tags: ['aerial', 'winter', 'agriculture', 'patterns', 'drone', 'snow']
+    tags: ['aerial', 'winter', 'agriculture', 'patterns', 'drone', 'snow'],
+    region: 'KS',
+    location: 'McDonald'
   }
 ]
 

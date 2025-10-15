@@ -10,6 +10,8 @@ export interface BaseAsset {
   description?: string
   date?: string | Date
   tags?: string[]
+  region?: string
+  location?: string
 }
 
 export interface ImageAsset extends BaseAsset {
