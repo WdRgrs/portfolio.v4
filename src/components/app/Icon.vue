@@ -1,52 +1,43 @@
 <template>
   <component 
-    :is="parseComponent"
+    v-if="iconComponent"
+    :is="iconComponent"
     class="icon"
-    :color="color"
+    :color="computedColor"
     :size="parseSize"
-    :stroke-width="3"
+    :stroke-width="strokeWidth"
   />
+  <span v-else class="icon icon--missing" :title="`Icon '${name}' not found`">
+    ?
+  </span>
 </template>
+
 <script setup lang="ts">
 import { computed } from 'vue'
-import { 
-  List,
-  ExternalLink,
-  ChevronDown,
-  Lightbulb,
-  Sun,
-  Moon,
-  SunMoon,
-  Grip,
-  LayoutGrid,
-  Maximize2
-} from 'lucide-vue-next';
-
-type BtnIcons = 'link' | 'list' | 'lightbulb' | 'chevron-down' | 'moon' | 'sun' | 'sun-moon' | 'grip' | 'grid' | 'expand'
-type CompanyIcons = 'github' | 'linkedin' | 'instagram'
-
-export type IconType = BtnIcons | CompanyIcons
+import { getIcon, type IconName } from '@/constants/icons'
 
 interface Props {
-  name: IconType
+  name: IconName
   color?: string
   size?: string | number
   variant?: 'default' | 'muted' | 'accent' | 'primary'
+  strokeWidth?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
   name: 'link',
-  color: 'var(--color-primary)',
-  size: 'md'
+  size: 'md',
+  variant: 'default',
+  strokeWidth: 2.5
 })
 
+const iconComponent = computed(() => getIcon(props.name))
+
 const parseSize = computed(() => {
-  // If it's already a number, return it directly
   if (typeof props.size === 'number') {
     return props.size
   }
 
-  // Otherwise parse the size token
   switch (props.size) {
     case 'xl':
       return 28
@@ -59,43 +50,49 @@ const parseSize = computed(() => {
     case 'xs':
       return 10
     default:
-      // If it's a string like '20px', strip units and convert to number
       return parseInt(props.size) || 18
   }
 })
-    
-const parseComponent = computed(() => {
-  switch (props.name) { 
-    case 'expand':
-      return Maximize2
-    case 'grid':
-      return LayoutGrid
-    case 'grip':
-      return Grip
-    case 'sun-moon':
-      return SunMoon
-    case 'sun':
-      return Sun
-    case 'moon':
-      return Moon
-    case 'list':
-      return List
-    case 'lightbulb':
-      return Lightbulb
-    case 'chevron-down':
-      return ChevronDown
-    case 'link':
+
+const computedColor = computed(() => {
+  if (props.color) {
+    return props.color
+  }
+
+  switch (props.variant) {
+    case 'primary':
+      return 'var(--color-primary)'
+    case 'accent':
+      return 'var(--color-accent)'
+    case 'muted':
+      return 'var(--color-text-muted)'
+    case 'default':
     default:
-      return ExternalLink
-    
+      return 'var(--color-text)'
   }
 })
 </script>
 
 <style scoped lang="scss">
 .icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  
   @include mobile {
-    transform: scale(.6);
+    transform: scale(0.9);
+  }
+
+  &--missing {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-error);
+    color: var(--color-text);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
   }
 }
 </style>
