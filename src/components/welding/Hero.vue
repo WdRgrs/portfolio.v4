@@ -4,6 +4,7 @@
       <BaseImage 
         @contextmenu.prevent
         :asset="heroImage"
+        object-fit="fill"
       />
       <div class="weld-hero__sparks" >
         <span 
