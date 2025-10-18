@@ -1,18 +1,10 @@
 <template>
   <section class="weld-hero">
     <div class="weld-hero__image-container">
-      <img
-        class="weld-hero__image"
-        :src="getAssetUrl(heroImage.path)"
-        :alt="heroImage.alt"
-        :width="heroImage.width"
-        :height="heroImage.height"
-        @load="handleImageLoad"
+      <BaseImage 
         @contextmenu.prevent
+        :asset="heroImage"
       />
-      
-      <!-- <div class="weld-hero__overlay"></div> -->
-      
       <div class="weld-hero__sparks" >
         <span 
           v-for="n in 24" 
@@ -23,19 +15,11 @@
       </div>
     </div>
 
-    <div class="weld-hero__content">
-      <h1 class="weld-hero__title">{{ heroImage.title }}</h1>
-      
-      <!-- <blockquote v-if="quote" class="weld-hero__quote">
-        <p class="weld-hero__quote-text">{{ quote.text }}</p>
-        <cite v-if="quote.author" class="weld-hero__quote-author">
-          — {{ quote.author }}
-        </cite>
-      </blockquote>
 
-      <p v-if="heroImage.description" class="weld-hero__description">
-        {{ heroImage.description }}
-      </p> -->
+    <div class="weld-hero__content">
+      <blockquote class="weld-hero__quote">
+        <p class="weld-hero__quote-text">This site, and especially this page are a work in progress (10/17/25), check back soon for new updates :)</p>
+      </blockquote>
     </div>
 
     <!-- Scroll indicator -->
@@ -49,25 +33,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { getAssetUrl } from '@/utils/assets'
-import { WELDING_IMAGES } from '@/assets/welding'
+import BaseImage from '@/components/media/BaseImage.vue'
+import { HERO_PHOTOS } from '@/assets/wedling/photos'
 
-interface Quote {
-  text: string
-  author?: string
-}
-
-const props = defineProps<{ quote?: Quote }>()
-
-const isImageLoaded = ref(false)
-
-// Use first image as hero - can be made configurable
-const heroImage = WELDING_IMAGES[0]
-
-const handleImageLoad = () => {
-  isImageLoaded.value = true
-}
+const heroImage = HERO_PHOTOS[0]
 </script>
 
 <style scoped lang="scss">
@@ -83,7 +52,7 @@ const handleImageLoad = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: calc(var(--nav-bar-height) * -1);  // ? Temp
+  margin-top: calc(var(--nav-bar-height) * -1); 
 
   &__image-container {
     position: absolute;
@@ -92,14 +61,6 @@ const handleImageLoad = () => {
     width: 100%;
     height: 100%;
     z-index: 0;
-  }
-
-  &__image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    // Subtle zoom on load for impact
     animation: subtleZoom 0.8s ease-out;
   }
 
@@ -114,23 +75,6 @@ const handleImageLoad = () => {
     }
   }
 
-  &__overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    // Darker overlay for welding aesthetic
-    background: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.5) 0%,
-      rgba(0, 0, 0, 0.2) 50%,
-      rgba(0, 0, 0, 0.6) 100%
-    );
-    z-index: 1;
-  }
-
-  // Animated spark particles
   &__sparks {
     position: absolute;
     top: 0;
@@ -240,26 +184,6 @@ const handleImageLoad = () => {
     }
   }
 
-  &__quote-author {
-    display: block;
-    font-family: var(--font-ui);
-    font-size: var(--text-base);
-    font-style: normal;
-    opacity: 0.9;
-  }
-
-  &__description {
-    font-family: var(--font-body);
-    font-size: var(--text-lg);
-    line-height: var(--leading-relaxed);
-    opacity: 0.95;
-    margin-top: var(--space-4);
-
-    @include mobile {
-      font-size: var(--text-base);
-    }
-  }
-
   &__scroll-indicator {
     position: absolute;
     bottom: var(--space-8);
@@ -270,7 +194,7 @@ const handleImageLoad = () => {
     flex-direction: column;
     align-items: center;
     gap: var(--space-2);
-    color: var(--color-text-inverse);
+    color: var(--color-info);
     animation: bounce 2s infinite;
     cursor: pointer;
 

@@ -36,13 +36,14 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import Icon, { type IconType } from '@/components/app/Icon.vue'
+import Icon from '@/components/app/Icon.vue'
+// import type 
 
 type Theme = 'light' | 'auto' | 'dark'
 interface ThemeOpts {
   value: Theme
   label: Theme
-  icon: IconType
+  icon: string
 }
 
 const STORAGE_KEY = 'theme'

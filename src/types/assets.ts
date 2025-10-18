@@ -57,3 +57,22 @@ export interface AssetCollection {
   videos: VideoAsset[]
   logos: LogoAsset[]
 }
+
+export interface WeldingLocation {
+  id: string
+  name: string
+  company: string
+  type: string
+  category: string
+  assetId?: string
+  city: string
+  state: string
+  lat: number
+  lng: number
+  image?: ImageAsset
+  additionalImages?: ImageAsset[]
+  dateRange?: string
+  description?: string
+  tags: string[]
+  order: number
+}
