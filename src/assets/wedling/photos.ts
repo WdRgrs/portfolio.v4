@@ -19,6 +19,85 @@ export const HERO_PHOTOS: ImageAsset[] = [
 ]
 
 // ============================================================================
+// CRAFT
+// ============================================================================
+
+export const CRAFT_PHOTOS: ImageAsset[] = [
+  {
+    id: 'flange-weld',
+    type: 'image',
+    path: 'welding/photos/prev/flange_weld.webp',
+    full: 'welding/photos/full/flange_weld.webp',
+    alt: 'Welded flange, 6010 hot pass',
+    title: '6010 Hot Pass',
+    description: '6010 hot pass on flange weld, 2 1/2" diameter carbon sleet pipe',
+    region: 'TX',
+    location: 'Taylor',
+    tags: ['industrial', 'pipe', 'government', '6010']
+  },
+  {
+    id: 'flanges',
+    type: 'image',
+    path: 'welding/photos/prev/flanges.webp',
+    full: 'welding/photos/full/flanges.webp',
+    alt: 'Stack of prefabricated flanges welded to pipe',
+    title: 'Flanges',
+    description: 'Large stack of prefabricated carbon steel flanges',
+    region: 'TX',
+    location: 'Taylor',
+    tags: ['industrial', 'pipe', 'government', 'flange']
+  },
+  {
+    id: 'hoover_dam-shaft',
+    type: 'image',
+    path: 'welding/photos/prev/hd_shaft.webp',
+    full: 'welding/photos/full/hd_shaft.webp',
+    alt: 'Pipe assemblies around the shaft of a generator at the Hoover Dam',
+    title: 'Generator Shaft Piping',
+    description: 'Eductor piping assemblies installed around the shaft of a generator at the Hoover Dam',
+    region: 'NV',
+    location: 'Hoover Dam',
+    tags: ['industrial', 'pipe', 'government', 'eductor']
+  },
+  {
+    id: 'ss-pipe',
+    type: 'image',
+    path: 'welding/photos/prev/ss_pipefit.webp',
+    full: 'welding/photos/full/ss_pipefit.webp',
+    alt: 'Oil & gas prefabricated stainless steel pipe assembly',
+    title: 'Stainless pipe assembly',
+    description: 'Prefabricated stainless steel pipe assembly, Oil & Gas',
+    region: 'TX',
+    location: 'Austin',
+    tags: ['industrial', 'pipe', 'stainless steel', 'prefabrication']
+  },
+  {
+    id: 'stick-welding',
+    type: 'image',
+    path: 'welding/photos/prev/stick_welding.webp',
+    full: 'welding/photos/full/stick_welding.webp',
+    alt: 'Stick welding carbon steel pipe',
+    title: 'Stick Weld',
+    description: 'Fixed position, stick welding bottom of carbon pipe',
+    region: 'TX',
+    location: 'Marble Falls',
+    tags: ['industrial', 'pipe', 'carbon steel', 'field']
+  },
+  {
+    id: 'tig-welding',
+    type: 'image',
+    path: 'welding/photos/prev/tig_welding.webp',
+    full: 'welding/photos/full/tig_welding.webp',
+    alt: 'Tig welding stainless steel pipe',
+    title: 'TIG Weld',
+    description: 'Fixed position, tig welding bottom of stainless pipe',
+    region: 'TX',
+    location: 'Austin',
+    tags: ['industrial', 'pipe', 'stainless steel', 'field']
+  },
+]
+
+// ============================================================================
 // TYPICAL
 // ============================================================================
 
@@ -34,9 +113,9 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     full: 'welding/location/full/atx_courthouse.webp',
     alt: 'Welding work at Austin Courthouse construction site',
     title: 'Austin Courthouse',
-    description: 'Structural steel welding and fabrication for the Austin Courthouse renovation project',
-    region: 'Texas',
-    location: 'Austin, TX',
+    description: 'Mechanical carbon steel welding and fabrication for the Austin Courthouse',
+    region: 'TX',
+    location: 'Austin',
     tags: ['commercial', 'structural', 'government', 'austin']
   },
   {
@@ -47,9 +126,9 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     alt: 'Industrial welding at DMS facility',
     title: 'DMS Facility',
     description: 'Heavy industrial welding and equipment fabrication at the DMS manufacturing plant',
-    region: 'Texas',
-    location: 'Texas',
-    tags: ['industrial', 'manufacturing', 'heavy-duty']
+    region: 'TX',
+    location: 'Austin',
+    tags: ['industrial', 'manufacturing']
   },
   {
     id: 'dyess-afb',
@@ -58,9 +137,9 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     full: 'welding/location/full/dyess-afb.webp',
     alt: 'Military base welding at Dyess Air Force Base',
     title: 'Dyess Air Force Base',
-    description: 'Precision welding and structural repairs for military aircraft hangar and support facilities',
-    region: 'Texas',
-    location: 'Abilene, TX',
+    description: 'Stick welding (6010) and structural repairs for base support facilities',
+    region: 'TX',
+    location: 'Abilene',
     tags: ['military', 'government', 'structural', 'aerospace']
   },
   {
@@ -70,9 +149,9 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     full: 'welding/location/full/ft_hood.webp',
     alt: 'Welding operations at Fort Hood military installation',
     title: 'Fort Hood',
-    description: 'Structural welding and fabrication for military base infrastructure and facilities',
-    region: 'Texas',
-    location: 'Fort Hood, TX',
+    description: 'Abrams Tank yard',
+    region: 'TX',
+    location: 'Fort Hood',
     tags: ['military', 'government', 'structural', 'defense']
   },
   {
@@ -83,8 +162,8 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     alt: 'Welding project in Gilroy',
     title: 'Gilroy Project',
     description: 'Custom fabrication and welding work in Gilroy',
-    region: 'California',
-    location: 'Gilroy, CA',
+    region: 'CA',
+    location: 'Gilroy',
     tags: ['commercial', 'fabrication']
   },
   {
@@ -95,8 +174,8 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     alt: 'Structural welding at Hoover Dam hydroelectric facility',
     title: 'Hoover Dam - Phase 1',
     description: 'Infrastructure welding and repairs at one of America\'s iconic hydroelectric dams',
-    region: 'Nevada',
-    location: 'Boulder City, NV',
+    region: 'NV',
+    location: 'Boulder City',
     tags: ['infrastructure', 'hydroelectric', 'landmark', 'government']
   },
   {
@@ -107,8 +186,8 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     alt: 'Additional welding work at Hoover Dam facility',
     title: 'Hoover Dam - Phase 2',
     description: 'Continued structural welding and maintenance work at Hoover Dam',
-    region: 'Nevada',
-    location: 'Boulder City, NV',
+    region: 'NV',
+    location: 'Boulder City',
     tags: ['infrastructure', 'hydroelectric', 'landmark', 'government']
   },
   {
@@ -119,8 +198,8 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     alt: 'Additional welding work at Hoover Dam facility',
     title: 'Hoover Dam - Phase 2',
     description: 'Continued structural welding and maintenance work at Hoover Dam',
-    region: 'Nevada',
-    location: 'Boulder City, NV',
+    region: 'NV',
+    location: 'Boulder City',
     tags: ['infrastructure', 'hydroelectric', 'landmark', 'government']
   },
   {
@@ -131,8 +210,8 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     alt: 'Welding operations in Jacksonville',
     title: 'Jacksonville Project',
     description: 'Commercial welding and fabrication work in Jacksonville',
-    region: 'Florida',
-    location: 'Jacksonville, FL',
+    region: 'FL',
+    location: 'Jacksonville',
     tags: ['commercial', 'structural']
   },
   {
@@ -143,8 +222,8 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     alt: 'Industrial welding in Lafayette',
     title: 'Lafayette Facility',
     description: 'Industrial fabrication and welding services in Lafayette',
-    region: 'Louisiana',
-    location: 'Lafayette, LA',
+    region: 'LA',
+    location: 'Lafayette',
     tags: ['industrial', 'oil-gas', 'fabrication']
   },
   {
@@ -155,8 +234,8 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     alt: 'welding work in Leander workshop',
     title: 'Leander Workshop',
     description: 'fabrication and welding at Leander school',
-    region: 'Texas',
-    location: 'Leander, TX',
+    region: 'TX',
+    location: 'Leander',
     tags: ['fabrication', 'workshop']
   },
   {
@@ -167,8 +246,8 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     alt: 'Welding instruction and training at MTech Marble Falls',
     title: 'MTech Marble Falls',
     description: 'Fabrication and installation of mechanical piping systems for a new hostpital',
-    region: 'Texas',
-    location: 'Marble Falls, TX',
+    region: 'TX',
+    location: 'Marble Falls',
     tags: ['stick', 'tig', 'mechanical', 'technical']
   },
   {
@@ -177,10 +256,10 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     path: 'welding/location/prev/nassau.webp',
     full: 'welding/location/full/nassau.webp',
     alt: 'Marine welding work in Nassau',
-    title: 'Nassau Project',
-    description: 'TIG stainless commercial welding & pipefitting.',
+    title: 'Nassau Sunset',
+    description: 'Sunset - TIG stainless commercial welding & pipefitting.',
     region: 'Bahamas',
-    location: 'Nassau, Bahamas',
+    location: 'Nassau',
     tags: ['mechanical', 'pipefitting', 'stainless', 'international']
   },
   {
@@ -191,8 +270,8 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     alt: 'Welding operations in New Brunswick',
     title: 'New Brunswick Project',
     description: 'Industrial welding and fabrication in New Brunswick',
-    region: 'New Jersey',
-    location: 'New Brunswick, NJ',
+    region: 'NJ',
+    location: 'New Brunswick',
     tags: ['industrial', 'commercial', 'udpate']
   },
   {
@@ -200,11 +279,11 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     type: 'image',
     path: 'welding/location/prev/ocala.webp',
     full: 'welding/location/full/ocala.webp',
-    alt: 'Welding work in Ocala',
-    title: 'Ocala Project',
-    description: 'Commercial welding and pipefitting in Ocala',
-    region: 'Florida',
-    location: 'Ocala, FL',
+    alt: 'Local wildlife, Ocala',
+    title: 'Ocala Friend',
+    description: 'Local wildlife of Ocala',
+    region: 'FL',
+    location: 'Ocala',
     tags: ['commercial', 'install', 'new']
   },
   {
@@ -214,10 +293,10 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     full: 'welding/location/full/ows-fab.webp',
     alt: 'Welding operations at OWS Fabrication shop',
     title: 'OWS Fabrication Shop',
-    description: 'Custom metal fabrication and welding at OWS facility',
-    region: 'Texas',
-    location: 'Texas',
-    tags: ['fabrication', 'shop', 'custom', 'industrial']
+    description: 'Prefabricated stainless steel weld assembly of Victaulic fitting',
+    region: 'TX',
+    location: 'Austin',
+    tags: ['fabrication', 'stainless',  'Victaulic', 'industrial']
   },
   {
     id: 'ows-field-gonzales',
@@ -226,9 +305,9 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     full: 'welding/location/full/ows-field.webp',
     alt: 'Field welding work at OWS site',
     title: 'OWS Field Operations',
-    description: 'On-site field welding and repairs for OWS projects',
-    region: 'Texas',
-    location: 'Texas',
+    description: 'On-site field welding and repair of stainless steel vessel',
+    region: 'TX',
+    location: 'Gonzales',
     tags: ['field-work', 'on-site', 'repair', 'mobile']
   },
   {
@@ -236,60 +315,60 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     type: 'image',
     path: 'welding/location/prev/ph_1.webp',
     full: 'welding/location/full/ph_1.webp',
-    alt: 'Industrial welding at processing facility phase 1',
-    title: 'Processing Plant - Phase 1',
-    description: 'Heavy industrial welding for processing plant construction phase 1',
+    alt: 'Custom welding hood and leather gauntlets',
+    title: 'PPE',
+    description: 'Tools of the trade - Texas flag welding hood & leather gauntlets',
     region: 'Texas',
     location: 'Texas',
-    tags: ['industrial', 'processing', 'heavy-duty', 'construction']
+    tags: ['industrial', 'construction']
   },
   {
     id: 'ph-2',
     type: 'image',
     path: 'welding/location/prev/ph_2.webp',
     full: 'welding/location/full/ph_2.webp',
-    alt: 'Industrial welding at processing facility phase 2',
-    title: 'Processing Plant - Phase 2',
-    description: 'Continued heavy industrial welding for processing plant phase 2',
+    alt: 'Stacked socket TIG welds',
+    title: 'Sockets',
+    description: 'Stacked TIG socket welds, reducing',
     region: 'Texas',
     location: 'Texas',
-    tags: ['industrial', 'processing', 'heavy-duty', 'construction']
+    tags: ['industrial', 'construction']
   },
   {
     id: 'ph-3',
     type: 'image',
     path: 'welding/location/prev/ph_3.webp',
     full: 'welding/location/full/ph_3.webp',
-    alt: 'Industrial welding at processing facility phase 3',
-    title: 'Processing Plant - Phase 3',
-    description: 'Advanced phase welding and fabrication for processing plant phase 3',
+    alt: 'Fixed position pipe weld, low profile',
+    title: 'Stick welding',
+    description: 'Limited access, fixed position pipe weld on carbon steel',
     region: 'Texas',
     location: 'Texas',
-    tags: ['industrial', 'processing', 'heavy-duty', 'construction']
+    tags: ['industrial', 'construction']
   },
   {
     id: 'ph-4',
     type: 'image',
     path: 'welding/location/prev/ph_4.webp',
     full: 'welding/location/full/ph_4.webp',
-    alt: 'Industrial welding at processing facility phase 4',
-    title: 'Processing Plant - Phase 4',
-    description: 'Final phase structural welding for processing plant phase 4',
-    region: 'Texas',
-    location: 'Texas',
-    tags: ['industrial', 'processing', 'heavy-duty', 'construction']
+    alt: 'Construction selfie with crane background',
+    title: 'Crane selfie',
+    description: 'Selfie on rooftop of bahamas while waiting for a crane pick',
+    region: 'BS',
+    location: 'Nassau',
+    tags: ['industrial', 'construction']
   },
   {
     id: 'ph-5',
     type: 'image',
     path: 'welding/location/prev/ph_5.webp',
     full: 'welding/location/full/ph_5.webp',
-    alt: 'Industrial welding at processing facility phase 5',
-    title: 'Processing Plant - Phase 5',
-    description: 'Completion welding and finishing work for processing plant phase 5',
-    region: 'Texas',
-    location: 'Texas',
-    tags: ['industrial', 'processing', 'heavy-duty', 'construction']
+    alt: 'Electrical warning sign',
+    title: 'High Voltage',
+    description: 'Spray-painted high voltage warning sign - Hoover Dam',
+    region: 'AZ',
+    location: 'Hoover Dam',
+    tags: ['industrial', 'danger', 'high-voltage']
   },
   {
     id: 'irs-pottsville',
@@ -299,9 +378,9 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     alt: 'Welding operations in Pottsville',
     title: 'Pottsville Project',
     description: 'Industrial welding and repair work in Pottsville',
-    region: 'Pennsylvania',
-    location: 'Pottsville, PA',
-    tags: ['industrial', 'repair']
+    region: 'PA',
+    location: 'Pottsville',
+    tags: ['industrial', 'repair', 'skyline']
   },
   {
     id: 'irs-ridgefield',
@@ -309,11 +388,11 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     path: 'welding/location/prev/ridgefield.webp',
     full: 'welding/location/full/ridgefield.webp',
     alt: 'Commercial welding in Ridgefield',
-    title: 'Ridgefield Project',
-    description: 'Commercial fabrication and welding services in Ridgefield',
-    region: 'Washington',
-    location: 'Ridgefield, WA',
-    tags: ['commercial', 'fabrication']
+    title: 'Ridgefield Sunrise',
+    description: 'Sunrise view from jobsite in Ridgefield',
+    region: 'WA',
+    location: 'Ridgefield',
+    tags: ['commercial', 'fabrication', 'skyline']
   },
   {
     id: 'journey-taylor',
@@ -322,10 +401,10 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     full: 'welding/location/full/taylor.webp',
     alt: 'Welding work in Taylor',
     title: 'Taylor Facility',
-    description: 'Industrial welding and structural work in Taylor',
-    region: 'Texas',
-    location: 'Taylor, TX',
-    tags: ['industrial', 'structural']
+    description: 'Rig welding and pipefitting work in Taylor',
+    region: 'TX',
+    location: 'Taylor',
+    tags: ['industrial', 'structural', 'rig']
   },
   {
     id: 'irs-washington',
@@ -333,10 +412,10 @@ export const LOCATION_PHOTOS: ImageAsset[] = [
     path: 'welding/location/prev/wa.webp',
     full: 'welding/location/full/wa.webp',
     alt: 'Welding operations in Washington State',
-    title: 'Washington State Project',
-    description: 'Commercial and industrial welding work in Washington',
-    region: 'Washington',
-    location: 'Washington',
-    tags: ['commercial', 'industrial', 'pacific-northwest']
+    title: 'Washington Warehouse',
+    description: 'Commercial and industrial jobsite work in Washington',
+    region: 'WA',
+    location: 'Ridgefield',
+    tags: ['commercial', 'industrial']
   }
 ]

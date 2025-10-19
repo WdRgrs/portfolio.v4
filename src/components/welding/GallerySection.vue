@@ -1,58 +1,58 @@
 <template>
-  <section class="gallery-section">
-    <div class="container">
-      <h2 class="gallery-section__heading">Gallery</h2>
-      
-      <!-- Filter buttons -->
-      <div class="filters">
-        <button
-          v-for="filter in filters"
-          :key="filter"
-          class="filter-button"
-          :class="{ 'filter-button--active': activeFilter === filter }"
-          @click="() => activeFilter = filter"
-        >
-          {{ filter }}
-        </button>
-      </div>
-      
-      <!-- Masonry grid -->
-      <div class="gallery-grid">
-        <div
-          v-for="image in filteredImages"
-          :key="image.id"
-          class="gallery-item"
-          @click="() => openLightbox(image)"
-        >
-          <BaseImage
-            :asset="image"
-            objectFit="fill"
-            />
-            <!-- :width="image.width"
-            :height="image.height"
-            class="gallery-item__image" -->
-          
-          <!-- Tags overlay on hover -->
-          <div class="gallery-item__overlay">
-            <div class="gallery-item__tags">
-              <span
-                v-for="tag in image.tags"
-                :key="tag"
-                class="gallery-item__tag"
-              >
-                {{ tag }}
-              </span>
-            </div>
+  <div>
+    <div class="filters">
+      <button
+        v-for="filter in filters"
+        :key="filter"
+        class="filter-button"
+        :class="{ 'filter-button--active': activeFilter === filter }"
+        @click="() => activeFilter = filter"
+      >
+        {{ filter }}
+      </button>
+    </div>
+    
+    <div class="gallery-grid">
+      <div
+        v-for="(image, idx) in filteredImages"
+        :key="image.id"
+        class="gallery-item"
+        @click="() => openLightbox(idx)"
+      >
+        <BaseImage
+          :asset="image"
+          object-fit="cover"
+        />
+        
+        <div class="gallery-item__overlay">
+          <div class="gallery-item__tags">
+            <span
+              v-for="tag in image.tags"
+              :key="tag"
+              class="gallery-item__tag"
+            >
+              {{ tag }}
+            </span>
           </div>
         </div>
       </div>
     </div>
-  </section>
+
+    <!-- Lightbox -->
+    <Lightbox
+      v-if="lightboxIndex !== null"
+      :images="filteredImages"
+      :current-index="lightboxIndex"
+      @close="closeLightbox"
+      @navigate="lightboxIndex = $event"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import BaseImage from '@/components/media/BaseImage.vue'
+import Lightbox from '@/components/media/Lightbox.vue'
 import type { ImageAsset } from '@/types/assets'
 
 interface Props {
@@ -62,8 +62,8 @@ interface Props {
 const props = defineProps<Props>()
 
 const activeFilter = ref<string>('All')
+const lightboxIndex = ref<number | null>(null)
 
-// Extract unique tags from all images
 const filters = computed(() => {
   const tags = new Set<string>(['All'])
   props.images.forEach(image => {
@@ -72,7 +72,6 @@ const filters = computed(() => {
   return Array.from(tags)
 })
 
-// Filter images based on active filter
 const filteredImages = computed(() => {
   if (activeFilter.value === 'All') {
     return props.images
@@ -82,33 +81,16 @@ const filteredImages = computed(() => {
   )
 })
 
-const openLightbox = (image: ImageAsset) => {
-  // Lightbox implementation would go here
-  console.log('Open lightbox for:', image.id)
+function openLightbox(index: number) {
+  lightboxIndex.value = index
+}
+
+function closeLightbox() {
+  lightboxIndex.value = null
 }
 </script>
 
 <style scoped lang="scss">
-.gallery-section {
-  padding: var(--space-8) var(--space-6);
-  
-  @include mobile {
-    padding: var(--space-6) var(--space-4);
-  }
-
-  &__heading {
-    font-size: clamp(2rem, 5vw, 3rem);
-    font-weight: var(--font-bold);
-    margin-bottom: var(--space-8);
-    text-align: center;
-  }
-}
-
-.container {
-  max-width: 1600px;
-  margin: 0 auto;
-}
-
 .filters {
   display: flex;
   flex-wrap: wrap;
@@ -143,25 +125,102 @@ const openLightbox = (image: ImageAsset) => {
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: var(--space-4);
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: 280px;
+  gap: var(--space-2);
+  
+  @include tablet {
+    grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: 200px;
+  }
   
   @include mobile {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: var(--space-3);
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 240px;
   }
 }
 
 .gallery-item {
   position: relative;
-  aspect-ratio: 4 / 3;
+  cursor: pointer;
   overflow: hidden;
   border-radius: var(--radius-md);
-  cursor: pointer;
   background: var(--color-surface-2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  // Varied column spans for visual interest
+  &:nth-child(9n + 1) {
+    grid-column: span 4;
+  }
+  
+  &:nth-child(9n + 2) {
+    grid-column: span 5;
+  }
+  
+  &:nth-child(9n + 3) {
+    grid-column: span 3;
+  }
+  
+  &:nth-child(9n + 4) {
+    grid-column: span 3;
+  }
+  
+  &:nth-child(9n + 5) {
+    grid-column: span 4;
+  }
+  
+  &:nth-child(9n + 6) {
+    grid-column: span 5;
+  }
+  
+  &:nth-child(9n + 7) {
+    grid-column: span 5;
+  }
+  
+  &:nth-child(9n + 8) {
+    grid-column: span 3;
+  }
+  
+  &:nth-child(9n + 9) {
+    grid-column: span 4;
+  }
+
+  @include tablet {
+    &:nth-child(6n + 1) {
+      grid-column: span 4;
+    }
+    
+    &:nth-child(6n + 2) {
+      grid-column: span 2;
+    }
+    
+    &:nth-child(6n + 3) {
+      grid-column: span 3;
+    }
+    
+    &:nth-child(6n + 4) {
+      grid-column: span 3;
+    }
+    
+    &:nth-child(6n + 5) {
+      grid-column: span 2;
+    }
+    
+    &:nth-child(6n + 6) {
+      grid-column: span 4;
+    }
+  }
+
+  @include mobile {
+    grid-column: span 2 !important;
+  }
 
   &:hover {
-    .gallery-item__image {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+
+    :deep(.base-image__img) {
       transform: scale(1.05);
     }
 
@@ -170,7 +229,16 @@ const openLightbox = (image: ImageAsset) => {
     }
   }
 
-  &__image {
+  &:active {
+    transform: translateY(-2px);
+  }
+  
+  :deep(.base-image) {
+    width: 100%;
+    height: 100%;
+  }
+  
+  :deep(.base-image__img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -191,6 +259,7 @@ const openLightbox = (image: ImageAsset) => {
     padding: var(--space-4);
     opacity: 0;
     transition: opacity 0.3s ease;
+    pointer-events: none;
   }
 
   &__tags {
@@ -207,6 +276,20 @@ const openLightbox = (image: ImageAsset) => {
     font-size: var(--text-xs);
     color: white;
     text-transform: capitalize;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-item {
+    transition: none;
+    
+    &:hover {
+      transform: none;
+      
+      :deep(.base-image__img) {
+        transform: none;
+      }
+    }
   }
 }
 </style>

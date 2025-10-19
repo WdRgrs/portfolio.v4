@@ -2,44 +2,44 @@
   <div class="welding-page">
     <WeldHero />
 
-    <div class="welding-page__content">
-      <!-- <CraftSection :cards="CRAFT_CARDS" /> -->
-      <!-- <StorySection :blocks="STORY_BLOCKS" /> -->
-      <Map />
-      <!-- <ArtSection :images="LOCATION_PHOTOS" /> -->
-      <GallerySection :images="LOCATION_PHOTOS" />
-    </div>
+    <SectionWrapper heading="The Craft" variant="light">
+      <CraftSection :cards="CRAFT_CARDS" />
+    </SectionWrapper>
+
+    <SectionWrapper heading="The Journey" variant="dark">
+      <MapSection />
+    </SectionWrapper>
+
+    <!-- <SectionWrapper 
+      heading="Blacksmithing & Art Metals" 
+      intro="Rejoice in the hands"
+      variant="light"
+    >
+      <ArtSection :images="LOCATION_PHOTOS" />
+    </SectionWrapper> -->
+
+    <SectionWrapper heading="Gallery" variant="light">
+      <GallerySection :images="galleryImages" />
+    </SectionWrapper>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import WeldHero from '@/components/welding/Hero.vue'
-import Map from '@/components/welding/Map.vue'
-
-// import StorySection from '@/components/welding/StorySection.vue'
-// import CraftSection from '@/components/welding/CraftSection.vue'
-// import ArtSection from '@/components/welding/ArtSection.vue'
+import SectionWrapper from '@/components/page/Section.2.vue'
+import MapSection from '@/components/welding/Map.vue'
+import CraftSection from '@/components/welding/CraftSection.vue'
 import GallerySection from '@/components/welding/GallerySection.vue'
-import { LOCATION_PHOTOS} from '@/assets/wedling/photos'
+// import ArtSection from '@/components/welding/ArtSection.vue'
+import { CRAFT_PHOTOS, LOCATION_PHOTOS } from '@/assets/wedling/photos'
+import { CRAFT_CARDS } from '@/assets/wedling/config'
 
+const galleryImages = [ ...CRAFT_PHOTOS, ...LOCATION_PHOTOS, ]
 </script>
 
 <style scoped lang="scss">
 .welding-page {
   width: 100%;
   min-height: 100vh;
-
-  &__content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-16);
-    padding: var(--space-16) 0;
-
-    @include mobile {
-      gap: var(--space-12);
-      padding: var(--space-12) 0;
-    }
-  }
 }
 </style>

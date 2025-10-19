@@ -2,7 +2,6 @@
   <section class="weld-hero">
     <div class="weld-hero__image-container">
       <BaseImage 
-        @contextmenu.prevent
         :asset="heroImage"
         object-fit="fill"
       />
@@ -19,7 +18,7 @@
 
     <div class="weld-hero__content">
       <blockquote class="weld-hero__quote">
-        <p class="weld-hero__quote-text">This site, and especially this page are a work in progress (10/17/25), check back soon for new updates :)</p>
+        <p class="weld-hero__quote-text">This site, and especially this page are a work in progress (10/19/25), check back soon for new updates :)</p>
       </blockquote>
     </div>
 
