@@ -2,7 +2,7 @@
   <div class="landing">
     <!-- Background effects container -->
     <div class="landing__background">
-    <Particles class="landing__particles"/>
+      <Particles class="landing__particles"/>
     </div>
 
     <div class="landing__container">
