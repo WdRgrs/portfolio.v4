@@ -1,6 +1,19 @@
 <template>
   <div class="landing">
-    <!-- Background effects -->
+    <!-- Background effects container -->
+    <div class="landing__background">
+      <!-- <LightRays 
+        :ray-count="16"
+        :rotation-speed="0.0003"
+        color="100, 200, 255"
+        :opacity="0.6"
+        :center-x="0.5"
+        :center-y="0.3"
+      /> -->
+
+      <!-- <Particles :count="100" color="100, 200, 255" /> -->
+
+    </div>
 
     <div class="landing__container">
       <!-- Title Section -->
@@ -31,32 +44,41 @@
 </template>
 
 <script setup lang="ts">
-import { SITE_LINKS } from '@/constants';
-
+import { SITE_LINKS } from '@/constants'
+// import LightRays from '@/components/test/LightRays.vue'
+// import Particles from '@/components/test/Particles.vue'
 
 const navLinks = SITE_LINKS.filter(ln => ln.main)
 </script>
 
 <style scoped lang="scss">
 .landing {
-  // position: fixed;
+  position: relative;
   width: 100dvw;
   height: 100dvh;
   overflow: hidden;
-
-  @include mobile {
-    margin-top: calc(var(--nav-bar-height) * -1);
-  }
+  top: calc(-1 * var(--nav-bar-height));
 
   background: radial-gradient(ellipse at bottom,
-    var(--color-surface-3) 0%,
+    var(--color-surface-1) 0%,
     var(--color-bg) 60%);
 
+  &__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
   &__container {
+    position: relative;
     display: flex;
     justify-content: center;
     width: 100%;
     height: 100%;
+    z-index: 1;
   }
 
   &__title-wrapper {
@@ -81,9 +103,11 @@ const navLinks = SITE_LINKS.filter(ln => ln.main)
   &__name {
     font-family: var(--font-cinzel);
     font-size: var(--text-landing);
+    color: var(--color-bg);
+
     // Stroke effect
-    -webkit-text-stroke-width: 0.05rem;
-    -webkit-text-stroke-color: var(--color-accent);
+    -webkit-text-stroke-width: 0.08rem;
+    -webkit-text-stroke-color: var(--color-secondary);
     transition: color 0.3s ease;
 
     @include mobile {
@@ -135,7 +159,8 @@ const navLinks = SITE_LINKS.filter(ln => ln.main)
     bottom: calc(var(--text-landing) * .2);
     margin-left: calc(var(--text-landing)* .65);
     margin-right: calc(var(--text-landing) * .275);
-    border: 1px solid var(--color-accent);
+    border-bottom: 2px solid var(--color-primary);
+    opacity: .7;
     z-index: -1;
 
     @include mobile {
@@ -152,8 +177,8 @@ const navLinks = SITE_LINKS.filter(ln => ln.main)
     height: 2rem;
     bottom: calc(var(--text-landing) * .15);
     left: calc(var(--text-landing) * .65);
-    -webkit-text-stroke-width: 0.005rem;
-    -webkit-text-stroke-color: var(--color-secondary);
+    -webkit-text-stroke-width: 0.025rem;
+    -webkit-text-stroke-color: var(--color-peach);
 
     @include mobile {
       display: flex;
@@ -177,6 +202,7 @@ const navLinks = SITE_LINKS.filter(ln => ln.main)
     font-family: var(--font-fredericka);
     font-size: calc(var(--text-landing) * .235);
     color: var(--color-accent);
+    color: var(--color-bg);
     text-decoration: none;
     transition: all 0.35s ease;
 
@@ -190,7 +216,7 @@ const navLinks = SITE_LINKS.filter(ln => ln.main)
     }
 
     &:hover {
-      color: var(--color-secondary);
+      color: var(--color-warning);
     }
 
     &::after {
@@ -201,7 +227,7 @@ const navLinks = SITE_LINKS.filter(ln => ln.main)
       height: 2px;
       bottom: 0;
       left: 0;
-      background-color: var(--color-accent);
+      background-color: var(--color-warning);
       opacity: 0.5;
       transform-origin: bottom right;
       transition: transform 0.35s ease-out;
@@ -209,7 +235,7 @@ const navLinks = SITE_LINKS.filter(ln => ln.main)
 
     &:hover::after {
       transform: scaleX(1);
-      background-color: var(--color-secondary);
+      background-color: var(--color-warning);
       transform-origin: bottom left;
     }
   }

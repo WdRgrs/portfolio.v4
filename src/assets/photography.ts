@@ -656,9 +656,8 @@ export const PHOTOGRAPHY_SERIES: PhotoSeries[] = [
   {
     id: 'mountain-layers',
     title: 'Mountain Atmosphere',
-    coverImage: PHOTOGRAPHY_IMAGES[16], // Frozen lake
+    coverImage: PHOTOGRAPHY_IMAGES[26], // Frozen lake
     images: [
-      PHOTOGRAPHY_IMAGES[16], // Frozen lake
       PHOTOGRAPHY_IMAGES[26], // Smoky mountains
       PHOTOGRAPHY_IMAGES[33], // Tetons
     ],
@@ -706,10 +705,10 @@ export const PHOTOGRAPHY_SERIES: PhotoSeries[] = [
   {
     id: 'aerial-perspectives',
     title: 'From Above',
-    coverImage: PHOTOGRAPHY_IMAGES[34], // Winter farm
+    coverImage: PHOTOGRAPHY_IMAGES[16], // Winter farm
     images: [
-      PHOTOGRAPHY_IMAGES[34], // Winter farm
       PHOTOGRAPHY_IMAGES[16], // Frozen lake
+      PHOTOGRAPHY_IMAGES[34], // Winter farm
     ],
     tags: ['aerial', 'drone', 'winter', 'patterns']
   }

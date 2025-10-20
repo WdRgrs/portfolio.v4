@@ -110,8 +110,9 @@ const closeMobileMenu = () => {
 
   &__name {
     text-decoration: none;
-
+    
     &-initial {
+      color: transparent;
       font-size: var(--text-2xl);
     }
 
@@ -119,8 +120,10 @@ const closeMobileMenu = () => {
       font-family: var(--font-cinzel);
       font-size: var(--text-lg);
       color: var(--color-secondary);
+      color: transparent;
+
       -webkit-text-stroke-width: .05rem;
-      -webkit-text-stroke-color: var(--color-text);
+      -webkit-text-stroke-color: var(--color-primary);
     }
   }
 

@@ -71,7 +71,7 @@ withDefaults(defineProps<Props>(), {
 
   &__heading {
     font-size: var(--text-4xl);
-    font-weight: var(--font-bold);
+    font-weight: var(--font-semibold);
     margin-bottom: var(--space-8);
     text-align: center;
     font-family: var(--font-title);
@@ -82,10 +82,6 @@ withDefaults(defineProps<Props>(), {
     color: var(--color-text-secondary);
     text-align: center;
     margin-bottom: var(--space-8);
-    
-    @include mobile {
-      margin-bottom: var(--space-8);
-    }
   }
 }
 </style>
