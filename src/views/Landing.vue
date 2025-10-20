@@ -2,17 +2,7 @@
   <div class="landing">
     <!-- Background effects container -->
     <div class="landing__background">
-      <!-- <LightRays 
-        :ray-count="16"
-        :rotation-speed="0.0003"
-        color="100, 200, 255"
-        :opacity="0.6"
-        :center-x="0.5"
-        :center-y="0.3"
-      /> -->
-
-      <!-- <Particles :count="100" color="100, 200, 255" /> -->
-
+    <Particles class="landing__particles"/>
     </div>
 
     <div class="landing__container">
@@ -45,8 +35,7 @@
 
 <script setup lang="ts">
 import { SITE_LINKS } from '@/constants'
-// import LightRays from '@/components/test/LightRays.vue'
-// import Particles from '@/components/test/Particles.vue'
+import Particles from '@/components/app/Particles.vue'
 
 const navLinks = SITE_LINKS.filter(ln => ln.main)
 </script>
@@ -58,17 +47,14 @@ const navLinks = SITE_LINKS.filter(ln => ln.main)
   height: 100dvh;
   overflow: hidden;
   top: calc(-1 * var(--nav-bar-height));
-
-  background: radial-gradient(ellipse at bottom,
-    var(--color-surface-1) 0%,
-    var(--color-bg) 60%);
+  // background: radial-gradient(ellipse at bottom,
+  //   var(--color-surface-1) 0%,
+  //   var(--color-bg) 60%);
+  background: transparent;
 
   &__background {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     z-index: 0;
   }
 
@@ -78,7 +64,7 @@ const navLinks = SITE_LINKS.filter(ln => ln.main)
     justify-content: center;
     width: 100%;
     height: 100%;
-    z-index: 1;
+    z-index: 2;
   }
 
   &__title-wrapper {
@@ -86,20 +72,25 @@ const navLinks = SITE_LINKS.filter(ln => ln.main)
     user-select: none;
     margin: auto;
     // Reflection effect for non-mobile
-    -webkit-box-reflect:
-      below -.3rem linear-gradient(transparent,
-        rgba(255, 255, 255, 0.01),
-        rgba(255, 255, 255, 0.2));
+    // -webkit-box-reflect:
+    //   below -.3rem linear-gradient(transparent,
+    //     rgba(255, 255, 255, 0.01),
+    //     rgba(255, 255, 255, 0.2));
 
-    @include mobile {
-      -webkit-box-reflect: unset;
-    }
+    // @include mobile {
+    //   -webkit-box-reflect: unset;
+    // }
 
-    @include tablet {
-      -webkit-box-reflect: unset;
-    }
+    // @include tablet {
+    //   -webkit-box-reflect: unset;
+    // }
   }
-
+&__particles {
+    position: absolute;
+    inset: 0;
+    z-index: 1;        /* still beneath content */
+    pointer-events: none;
+  }
   &__name {
     font-family: var(--font-cinzel);
     font-size: var(--text-landing);
