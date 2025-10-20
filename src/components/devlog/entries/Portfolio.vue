@@ -64,10 +64,10 @@
         <span>📦</span>
         <span>View v3 (React)</span>
       </button>
-      <button class="portfolio-btn portfolio-btn--live" @click="openLink(PORTFOLIO_LIVE)">
+      <!-- <button class="portfolio-btn portfolio-btn--live" @click="openLink(PORTFOLIO_LIVE)">
         <span>🚀</span>
         <span>Live Site</span>
-      </button>
+      </button> -->
     </template>
   </DevLogEntry>
 </template>
@@ -160,10 +160,6 @@ ul {
   }
 
   &--secondary {
-    background: var(--color-secondary);
-  }
-
-  &--live {
     background: var(--color-success);
   }
 }
