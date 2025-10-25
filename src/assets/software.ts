@@ -12,6 +12,42 @@ export const PORTFOLIO_LOGO: LogoAsset = {
   height: 269
 }
 
+// N8N
+export const N8N_VIDEOS: VideoAsset[] = [
+  {
+    id: 'discord-n8n',
+    type: 'video',
+    path: 'n8n/videos/discord-n8n.mp4',
+    poster: 'n8n/prev/discord-n8n_prev.webp',
+    alt: 'Automated messages populating discord channel',
+    title: 'Automated posts',
+    description: 'Automated messages (n8n workflow) populating a Discord channel',
+    date: '2025-10-23',
+    duration: 4,
+    width: 1280,
+    height: 708,
+    aspectRatio: '16:9',
+    tags: ['automation', 'n8n', 'discord', 'ui']
+  }
+]
+
+export const N8N_IMAGES: ImageAsset[] = [
+  {
+    id: 'n8n-canvas',
+    type: 'image',
+    path: 'n8n/prev/n8n-canvas.webp',
+    full: 'n8n/full/n8n-canvas.webp',
+    alt: 'Screenshot of n8n canvas/ui',
+    title: 'n8n Canvas',
+    description: 'Screenshot - n8n canvas, automated workflow for aggregating & filtering posted jobs from various resources',
+    date: '2025-10-23',
+    width: 1600,
+    height: 902,
+    aspectRatio: '16:9',
+    tags: ['n8n', 'screenshot', 'ui', 'automation']
+  },
+]
+
 // ALPHABITS
 export const ALPHABITS_LOGO: LogoAsset = {
   id: 'alphabits-logo',

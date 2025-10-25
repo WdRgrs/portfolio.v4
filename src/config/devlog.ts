@@ -3,6 +3,7 @@ import { ALPHABITS_LOGO, PIHOLE_LOGO, PORTFOLIO_LOGO } from '@/assets/software'
 import Portfolio from '@/components/devlog/entries/Portfolio.vue'
 import Alphabits from '@/components/devlog/entries/Alphabits.vue'
 import PiHole from '@/components/devlog/entries/PiHole.vue'
+import n8n from '@/components/devlog/entries/n8n.vue'
 
 export const DEVLOG_ENTRIES: DevLogEntryConfig[] = [
   {
@@ -15,6 +16,17 @@ export const DEVLOG_ENTRIES: DevLogEntryConfig[] = [
     readTime: 2,
     logo: PORTFOLIO_LOGO,
     repoId: 'WdRgrs/portfolio.v4',
+    featured: true
+  },
+  {
+    id: 'portfolio-2025',
+    component: n8n,
+    title: 'n8n Job Aggregation Workflow',
+    date: '2025-10-23',
+    types: ['project', 'research', 'ops'],
+    tags: ["n8n","docker", "automation", "home lab"],
+    readTime: 2,
+    // logo: PORTFOLIO_LOGO,
     featured: true
   },
   {
