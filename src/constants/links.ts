@@ -20,7 +20,8 @@ export const LINKS = {
   COMPANIES: {
     RHDM: 'https://www.rhdm.com',
     NEXTIQ: 'https://www.nextiq.com/',
-    HINKLE: 'http://www.hinketesting.com',
+    // HINKLE: 'http://hinkletesting.com/',
+    HINKLE: 'https://hinkle.waderogers.dev/',
     DEVMOUNTAIN: 'https://strayer.smartcatalogiq.com/en/2023-2024/catalog/nondegree-noncredit-offerings/devmountain-offerings',
   },
 
