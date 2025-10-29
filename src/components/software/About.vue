@@ -22,7 +22,6 @@
         <span v-html="text" />
       </p>
 
-      <!-- replace your sprite block -->
       <Transition name="sprite-pop" appear>
         <div
           class="about__animation"
@@ -33,8 +32,6 @@
           <PixelArtViewer :asset="treeAsset" :playing="true"  />
         </div>
       </Transition>
-
-
     </div>
   </PageSection>
 </template>
@@ -219,9 +216,6 @@ function startGlowCycle() {
       el.classList.remove('highlight--glow')
     }, ANIMATION_DURATION_MS)
     cleanupTimers.value.push(t)
-
-    // Note: We do not clamp the cadence. Overlap is expected and desired.
-    // Because we advance index mod N, a token is not re-triggered until a full pass completes.
   }, STEP_INTERVAL_MS)
 }
 
@@ -232,11 +226,6 @@ function stopGlowCycle() {
   }
 }
 
-/**
- * Render helpers
- * - We render data-gi on each TL;DR token for stable global ordering
- * - No glow class in HTML. JS adds/removes it on schedule.
- */
 function processWordsForDisplay(words: string[]): string {
   return words.map(word => {
     if (isBracketed(word)) {
@@ -277,7 +266,6 @@ const displayContent = computed(() => {
 <style scoped lang="scss">
 .about {
   position: relative;
-  /* punch controls */
   --glow-duration: 1500ms;
   --glow-punch-scale: 1.08;
   --glow-punch-brightness: 1.25;
@@ -405,28 +393,23 @@ const displayContent = computed(() => {
   0% {
     transform: scale(1);
     filter: brightness(1) contrast(100%) drop-shadow(0 0 0 var(--glow-color));
-    // border-bottom: 1px dotted rgba(255, 255, 255, 0.099);
   }
 
   8% {
     transform: scale(var(--glow-punch-scale));
     filter: brightness(var(--glow-punch-brightness)) contrast(var(--glow-contrast)) drop-shadow(0 0 var(--glow-blur) var(--glow-color));
-    // border-bottom: 1px dotted rgba(255, 255, 255, 0.099);
   }
 
   14% {
     transform: scale(calc(var(--glow-punch-scale) - 0.01));
     filter: brightness(calc(var(--glow-punch-brightness) - 0.05)) contrast(calc(var(--glow-contrast) - 10%)) drop-shadow(0 0 calc(var(--glow-blur) - 2px) var(--glow-color));
-    // border-bottom: 3px dashed rgba(115, 255, 255, 0.5);
   }
 
   100% {
     transform: scale(1);
     filter: brightness(1) contrast(100%) drop-shadow(0 0 0 var(--glow-color));
-    // border-bottom: 12px dotted rgba(55, 255, 255, 0.05);
   }
 }
-/* keep your existing .about__animation positioning */
 :deep(.about__animation) {
   transform-origin: 50% 80%;
   image-rendering: pixelated;
@@ -435,7 +418,6 @@ const displayContent = computed(() => {
   will-change: transform, opacity;
 }
 
-/* slower, shrink-on-hide */
 .sprite-pop-enter-from,
 .sprite-pop-leave-to {
   transform: scale(0.001);  /* near-zero avoids Safari aliasing issues */
@@ -449,7 +431,6 @@ const displayContent = computed(() => {
     opacity   1560ms ease-out;
 }
 
-/* fully shown */
 .sprite-pop-enter-to,
 .sprite-pop-leave-from {
   transform: scale(1);
