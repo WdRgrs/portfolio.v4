@@ -23,6 +23,25 @@ export interface ImageAsset extends BaseAsset {
   full?: string
 }
 
+export interface PixelAsset extends BaseAsset {
+  type: 'sprite'
+  sheetWidth: number;  
+  sheetHeight: number;   
+  frameWidth: number;
+  frameHeight: number;  
+  columns: number;
+  rows: number;  
+  animations?: {
+    [key: string]: {
+      frames: number[];
+      frameDuration: number;
+      loop: boolean;
+    };
+  };  
+  scale?: number;
+  defaultAnimation?: string;
+}
+
 export interface VideoAsset extends BaseAsset {
   type: 'video'
   poster?: string // ph

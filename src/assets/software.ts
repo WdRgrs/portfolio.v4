@@ -1,4 +1,4 @@
-import type { ImageAsset, VideoAsset, LogoAsset } from '@/types/assets'
+import type { ImageAsset, VideoAsset, LogoAsset, PixelAsset } from '@/types/assets'
 
 // PORTFOLIO
 export const PORTFOLIO_LOGO: LogoAsset = {
@@ -11,6 +11,34 @@ export const PORTFOLIO_LOGO: LogoAsset = {
   width: 512,
   height: 269
 }
+
+export const SPRITES: PixelAsset[] = [
+   {
+     id: 'tree-anim',
+     type: 'sprite',
+     path: 'sprites/tree-anim.webp',
+     title: 'Bon-sigh tree',
+     description: 'Animated pixel art tree with wind sway effect',
+     date: '2025-10-28',
+     sheetWidth: 640,
+     sheetHeight: 64,
+     frameWidth: 64,
+     frameHeight: 64,
+     columns: 10,
+     rows: 1,
+     animations: {
+       sway: {
+         frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+         frameDuration: 400,
+         loop: true
+       }
+     },
+     scale: 5,
+     defaultAnimation: 'sway',
+     tags: ['pixel', 'tree', 'animation', 'wind'],
+     alt: ''
+   },
+]
 
 // N8N
 export const N8N_VIDEOS: VideoAsset[] = [

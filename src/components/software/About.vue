@@ -21,23 +21,44 @@
       <p v-for="(text, idx) in displayContent" :key="idx">
         <span v-html="text" />
       </p>
+
+      <!-- replace your sprite block -->
+      <Transition name="sprite-pop" appear>
+        <div
+          class="about__animation"
+          v-show="isTldr"
+          aria-hidden="true"
+          :style="`filter: hue-rotate(${hueDeg}deg)`"
+        >
+          <PixelArtViewer :asset="treeAsset" :playing="true"  />
+        </div>
+      </Transition>
+
+
     </div>
   </PageSection>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import PageSection from '@/components/page/Section.vue'
+import { SPRITES } from '@/assets/software'
+import PixelArtViewer from '@/components/media/PixelArtViewer.vue'
+
+const ANIMATION_DURATION_MS = 1500
+const STEP_INTERVAL_MS = 200
 
 const isTldr = ref(false)
 const showTldr = ref(false)
-const activeGlowIndex = ref(-1)
 const paragraphWords = ref<string[][]>([])
-const animationTimers = ref<number[]>([])
-const glowSequenceTimer = ref<number | null>(null)
+const shrinkTimers = ref<number[]>([])
+const cycleInterval = ref<number | null>(null)
+const cleanupTimers = ref<number[]>([])
+const currentIndex = ref<number>(-1)
+const totalHighlights = ref<number>(0)
+let tokenEls: HTMLElement[] = []
 
-const ANIMATION_DURATION = 1000
-const GLOW_INTERVAL = 1200
+const treeAsset = {...SPRITES[0]}
 
 const paragraphSources = [
   `Hi! I'm Wade, [passionate] about building |things| and fueled by a [curious] tic to understand how and why they work.`,
@@ -47,15 +68,21 @@ const paragraphSources = [
 ]
 
 const tldrPhrases = [
-  `[passionate] & [curious] ..`,
-  `a [PC enthusiast] ..`,
-  `crafting [experiences] & [ideas] ..`,
-  `[inspired] by [innovation] ..`
+  `[pa][ssion][ate] & [cur][i][ous] ..`,
+  `a [PC] [en][thu][si][ast] ..`,
+  `crafting [ex][per][i][en][ces] & [i][dea][s] ..`,
+  `[in][spi][red] by [i][n][n][o][v][a][t][i][o][n] ..`,
+  `(and sometimes [making] [pixel] [art] ..)`
 ]
 
 onMounted(() => {
   resetContent()
 })
+
+const hueDeg = ref(0)
+function updateAnimHue() {
+  hueDeg.value++
+}
 
 onUnmounted(() => {
   clearAllTimers()
@@ -68,134 +95,157 @@ function toggleTldr() {
   } else {
     isTldr.value = false
     showTldr.value = false
-    activeGlowIndex.value = -1
+    stopGlowCycle()
+    currentIndex.value = -1
     startExpandAnimation()
   }
 }
 
 function resetContent() {
   clearAllTimers()
+  
+  setInterval(updateAnimHue, 100)
   paragraphWords.value = paragraphSources.map(src => src.split(' '))
+  currentIndex.value = -1
+  tokenEls = []
 }
 
 function clearAllTimers() {
-  animationTimers.value.forEach(clearInterval)
-  animationTimers.value = []
-  
-  if (glowSequenceTimer.value) {
-    clearInterval(glowSequenceTimer.value)
-    glowSequenceTimer.value = null
+  shrinkTimers.value.forEach(clearInterval)
+  shrinkTimers.value = []
+  if (cycleInterval.value) {
+    clearInterval(cycleInterval.value)
+    cycleInterval.value = null
   }
+  cleanupTimers.value.forEach(clearTimeout)
+  cleanupTimers.value = []
 }
 
-function isHighlighted(word: string): boolean {
+function isBracketed(word: string): boolean {
   return word.includes('[') || word.includes(']')
 }
 
 function startTldrAnimation() {
   clearAllTimers()
 
+  // Shrink away non-highlighted words over the duration
   paragraphWords.value.forEach((words, paragraphIndex) => {
-    const wordsToRemove = words.filter(w => !isHighlighted(w)).length
+    const wordsToRemove = words.filter(w => !isBracketed(w)).length
     if (wordsToRemove === 0) return
-
-    const interval = ANIMATION_DURATION / wordsToRemove
+    const interval = ANIMATION_DURATION_MS / wordsToRemove
     const timer = window.setInterval(() => {
       removeNextNonHighlightedWord(paragraphIndex)
     }, interval)
-
-    animationTimers.value.push(timer)
+    shrinkTimers.value.push(timer)
   })
 
-  setTimeout(() => {
+  // After shrink completes, show TL;DR and kick off glow cycle
+  window.setTimeout(async () => {
     showTldr.value = true
-    startGlowSequence()
-  }, ANIMATION_DURATION)
+    await nextTick()
+    indexTokensAndStart()
+  }, ANIMATION_DURATION_MS)
 }
 
 function startExpandAnimation() {
   clearAllTimers()
-  
   const fullSources = paragraphSources.map(src => src.split(' '))
-  
   fullSources.forEach((fullWords, paragraphIndex) => {
-    const wordsToAdd = fullWords.filter(w => !isHighlighted(w))
-    
+    const wordsToAdd = fullWords.filter(w => !isBracketed(w))
     if (wordsToAdd.length === 0) {
       paragraphWords.value[paragraphIndex] = fullWords
       return
     }
-    
-    const interval = ANIMATION_DURATION / wordsToAdd.length
+    const interval = ANIMATION_DURATION_MS / wordsToAdd.length
     let progress = 0
-    
     const timer = window.setInterval(() => {
       const result: string[] = []
       let nonHighlightedAdded = 0
-      
       fullWords.forEach(word => {
-        if (isHighlighted(word)) {
+        if (isBracketed(word)) {
           result.push(word)
         } else if (nonHighlightedAdded < progress) {
           result.push(word)
           nonHighlightedAdded++
         }
       })
-      
+      paragraphWords.value = fullSources
       paragraphWords.value[paragraphIndex] = result
       progress++
-      
       if (progress > wordsToAdd.length) {
         clearInterval(timer)
         paragraphWords.value[paragraphIndex] = fullWords
       }
     }, interval)
-    
-    animationTimers.value.push(timer)
+    shrinkTimers.value.push(timer)
   })
 }
 
 function removeNextNonHighlightedWord(paragraphIndex: number) {
   const words = paragraphWords.value[paragraphIndex]
-  const indexToRemove = words.findIndex(word => !isHighlighted(word))
-
-  if (indexToRemove !== -1) {
-    const newWords = [...words]
-    newWords.splice(indexToRemove, 1)
-    paragraphWords.value[paragraphIndex] = newWords
-  } else if (animationTimers.value[paragraphIndex]) {
-    clearInterval(animationTimers.value[paragraphIndex])
+  const idx = words.findIndex(word => !isBracketed(word))
+  if (idx !== -1) {
+    const next = [...words]
+    next.splice(idx, 1)
+    paragraphWords.value[paragraphIndex] = next
   }
 }
 
-function startGlowSequence() {
-  const totalHighlights = tldrPhrases.reduce((count, phrase) => {
-    const matches = phrase.match(/\[([^\]]+)\]/g)
-    return count + (matches?.length ?? 0)
-  }, 0)
+function indexTokensAndStart() {
+  // Build global list of token elements by data-gi
+  tokenEls = Array.from(document.querySelectorAll<HTMLElement>('[data-gi]'))
+    .sort((a, b) => Number(a.dataset.gi) - Number(b.dataset.gi))
 
-  if (totalHighlights === 0) return
+  totalHighlights.value = tokenEls.length
+  if (totalHighlights.value === 0) return
 
-  let currentHighlight = 0
-
-  const cycleGlow = () => {
-    activeGlowIndex.value = currentHighlight
-    currentHighlight = (currentHighlight + 1) % totalHighlights
-  }
-
-  cycleGlow()
-  glowSequenceTimer.value = window.setInterval(cycleGlow, GLOW_INTERVAL)
+  // Start from -1 so first step targets 0
+  currentIndex.value = -1
+  startGlowCycle()
 }
 
+function startGlowCycle() {
+  stopGlowCycle() // safety
+
+  cycleInterval.value = window.setInterval(() => {
+    // next token in the global sequence
+    currentIndex.value = (currentIndex.value + 1) % totalHighlights.value
+    const el = tokenEls[currentIndex.value]
+    if (!el) return
+
+    // Add glow for full duration, then remove
+    el.classList.add('highlight--glow')
+    const t = window.setTimeout(() => {
+      el.classList.remove('highlight--glow')
+    }, ANIMATION_DURATION_MS)
+    cleanupTimers.value.push(t)
+
+    // Note: We do not clamp the cadence. Overlap is expected and desired.
+    // Because we advance index mod N, a token is not re-triggered until a full pass completes.
+  }, STEP_INTERVAL_MS)
+}
+
+function stopGlowCycle() {
+  if (cycleInterval.value) {
+    clearInterval(cycleInterval.value)
+    cycleInterval.value = null
+  }
+}
+
+/**
+ * Render helpers
+ * - We render data-gi on each TL;DR token for stable global ordering
+ * - No glow class in HTML. JS adds/removes it on schedule.
+ */
 function processWordsForDisplay(words: string[]): string {
   return words.map(word => {
-    if (word.includes('[') || word.includes(']')) {
-      const cleanWord = word.replace(/[\[\]]/g, '')
-      return `<span class="highlight">${cleanWord}</span>`
+    if (isBracketed(word)) {
+      const clean = word.replace(/[\[\]]/g, '')
+      return `<span class="highlight">${clean}</span>`
     }
     if (word.includes('|')) {
-      const cleanWord = word.replace(/\|/g, '')
-      return `<span style="font-style: italic;">${cleanWord}</span>`
+      const clean = word.replace(/\|/g, '')
+      return `<span style="font-style: italic;">${clean}</span>`
     }
     return word
   }).join(' ')
@@ -204,17 +254,15 @@ function processWordsForDisplay(words: string[]): string {
 function processTldrForDisplay(phrase: string, paragraphIndex: number): string {
   let localIndex = 0
   let globalOffset = 0
-  
   for (let i = 0; i < paragraphIndex; i++) {
-    const matches = tldrPhrases[i].match(/\[([^\]]+)\]/g)
-    globalOffset += matches?.length ?? 0
+    const m = tldrPhrases[i].match(/\[([^\]]+)\]/g)
+    globalOffset += m?.length ?? 0
   }
 
   return phrase.replace(/\[([^\]]+)\]/g, (match, word) => {
-    const globalIndex = globalOffset + localIndex
-    const isGlowing = globalIndex === activeGlowIndex.value
-    localIndex++
-    return `<span class="highlight ${isGlowing ? 'highlight--glow' : ''}">${word}</span>`
+    const gi = globalOffset + localIndex++
+    const clean = word.replace(/[\[\]]/g, '')
+    return `<span class="highlight" data-gi="${gi}">${clean}</span>`
   })
 }
 
@@ -228,29 +276,27 @@ const displayContent = computed(() => {
 
 <style scoped lang="scss">
 .about {
+  position: relative;
+  /* punch controls */
+  --glow-duration: 1500ms;
+  --glow-punch-scale: 1.08;
+  --glow-punch-brightness: 1.25;
+  --glow-contrast: 220%;
+  --glow-blur: 14px;
+  --glow-color: var(--color-accent);
+
   &__title {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
 
-    span {
-      display: inline-block;
-    }
+    span { display: inline-block; }
 
     .slide-fade-enter-active,
-    .slide-fade-leave-active {
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+    .slide-fade-leave-active { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
 
-    .slide-fade-enter-from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-
-    .slide-fade-leave-to {
-      opacity: 0;
-      transform: translateY(10px);
-    }
+    .slide-fade-enter-from { opacity: 0; transform: translateY(-10px); }
+    .slide-fade-leave-to   { opacity: 0; transform: translateY(10px); }
   }
 
   &__content {
@@ -258,22 +304,15 @@ const displayContent = computed(() => {
     margin: 0 auto;
     max-width: var(--max-content-width);
     padding: 0 var(--space-8);
-    
-    @include mobile {
-      padding: 0 var(--space-4);
-    }
+
+    @include mobile { padding: 0 var(--space-4); }
 
     &--active {
-      @include tablet {
-        text-align: center;
-      }
-
+      @include tablet { text-align: center; }
       @include mobile {
         width: fit-content;
         margin: auto;
-        & p {
-          font-size: var(--text-xl) !important;
-        }
+        & p { font-size: var(--text-xl) !important; }
       }
     }
 
@@ -286,23 +325,41 @@ const displayContent = computed(() => {
       margin-bottom: var(--space-4);
       min-height: 1.5em;
       transition: opacity 0.3s ease;
-
-      @include mobile {
-        font-size: var(--text-lg);
-      }
+      @include mobile { font-size: var(--text-lg); }
     }
 
     :deep(.highlight) {
       font-weight: var(--font-semibold);
       color: var(--color-info);
-      transition: all 0.3s ease;
+    }
 
-      &.highlight--glow {
-        animation: glow 1.2s ease-in;
-      }
+    :deep(.highlight--glow) {
+      animation: glow var(--glow-duration) cubic-bezier(.2,.7,.2,1) 1 both;
+      will-change: transform, filter;
+      transform-origin: 50% 60%;
+      text-shadow: 0 0 0 var(--glow-color);
     }
   }
-  
+
+  &__animation {
+    position: absolute;
+    right: 20%;
+    bottom: -25%;
+
+    @include laptop {
+      right: 20%;
+    }
+    @include tablet {
+      right: 0%;
+      bottom: 0%;
+    }
+    @include mobile {
+      right: 0%;
+      bottom: 0%;
+      z-index: -1;
+    }
+  }
+
   .btn {
     perspective: 100cm;
     display: inline;
@@ -313,69 +370,94 @@ const displayContent = computed(() => {
     user-select: none;
     font-family: var(--font-fira);
     font-size: var(--text-lg);
-    
-    @include mobile {
-      transform: scale(var(--scale));
-      font-size: var(--text-xl);
-    }
+
+    @include mobile { transform: scale(var(--scale)); font-size: var(--text-xl); }
 
     span {
       position: absolute;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0; 
+      display: flex; align-items: center; justify-content: center;
+      top: 0; bottom: 0; left: 0; right: 0; 
       color: var(--color-text-secondary);
       background-color: transparent;
-      box-shadow: inset 0px 0px 0px 2px var(--color-info);
+      box-shadow: inset 0 0 0 2px var(--color-info);
       border-radius: var(--radius-md);
       transform-origin: 50% 50% -20px;
       transition: all .4s;
     }
-    
-    span:nth-child(1) {
-      transform: rotateX(0deg);
-    }
-    
+
+    span:nth-child(1) { transform: rotateX(0deg); }
+
     span:nth-child(2) {
       transform: rotateX(90deg);
-      box-shadow: inset 0px 0px 0px 2px var(--color-text-secondary);
+      box-shadow: inset 0 0 0 2px var(--color-text-secondary);
       background-color: var(--color-surface-1);
 
-      &::after {
-        content: (")");
-      }
-      
-      &:hover {
-        &::after {
-          content: ("P");
-        }
-      }
+      &::after { content: (")"); }
+      &:hover  { &::after { content: ("P"); } }
     }
 
-    &.btn--active span:nth-child(1) {
-      transform: rotateX(-90deg);
-    }
-
-    &.btn--active span:nth-child(2) {
-      transform: rotateX(0deg);
-    }
+    &.btn--active span:nth-child(1) { transform: rotateX(-90deg); }
+    &.btn--active span:nth-child(2) { transform: rotateX(0deg); }
   }
 }
 
 @keyframes glow {
-  0%,
-  100% {
+  0% {
     transform: scale(1);
-    filter: brightness(1);
+    filter: brightness(1) contrast(100%) drop-shadow(0 0 0 var(--glow-color));
+    // border-bottom: 1px dotted rgba(255, 255, 255, 0.099);
   }
 
-  50% {
-    transform: scale(1.05);
-    filter: brightness(1.1) contrast(200%) drop-shadow(0 0 12px var(--color-accent));
+  8% {
+    transform: scale(var(--glow-punch-scale));
+    filter: brightness(var(--glow-punch-brightness)) contrast(var(--glow-contrast)) drop-shadow(0 0 var(--glow-blur) var(--glow-color));
+    // border-bottom: 1px dotted rgba(255, 255, 255, 0.099);
   }
+
+  14% {
+    transform: scale(calc(var(--glow-punch-scale) - 0.01));
+    filter: brightness(calc(var(--glow-punch-brightness) - 0.05)) contrast(calc(var(--glow-contrast) - 10%)) drop-shadow(0 0 calc(var(--glow-blur) - 2px) var(--glow-color));
+    // border-bottom: 3px dashed rgba(115, 255, 255, 0.5);
+  }
+
+  100% {
+    transform: scale(1);
+    filter: brightness(1) contrast(100%) drop-shadow(0 0 0 var(--glow-color));
+    // border-bottom: 12px dotted rgba(55, 255, 255, 0.05);
+  }
+}
+/* keep your existing .about__animation positioning */
+:deep(.about__animation) {
+  transform-origin: 50% 80%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+/* slower, shrink-on-hide */
+.sprite-pop-enter-from,
+.sprite-pop-leave-to {
+  transform: scale(0.001);  /* near-zero avoids Safari aliasing issues */
+  opacity: 0;
+}
+
+.sprite-pop-enter-active,
+.sprite-pop-leave-active {
+  transition:
+    transform 2720ms cubic-bezier(.2,.8,.2,1),
+    opacity   1560ms ease-out;
+}
+
+/* fully shown */
+.sprite-pop-enter-to,
+.sprite-pop-leave-from {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* a11y */
+@media (prefers-reduced-motion: reduce) {
+  :deep(.highlight--glow) { animation: none !important; }
 }
 </style>
