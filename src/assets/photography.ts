@@ -4,7 +4,8 @@ export const PHOTOGRAPHY_VIDEOS: VideoAsset[] = [
   {
     id: 'drone-hero-WA',
     type: 'video',
-    path: 'photography/videos/drone-hero-WA_v2.mp4',
+    // path: 'photography/videos/drone-hero-WA_v2.mp4',
+    path: 'photography/videos/drone-hero-WA.mp4',
     poster: 'photography/videos/drone_hero_poster.jpg',
     alt: 'Aerial drone footage over lake in Washington',
     title: 'Woods of Washington',
