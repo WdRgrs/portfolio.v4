@@ -18,7 +18,7 @@
 
     <div class="weld-hero__content">
       <blockquote class="weld-hero__quote">
-        <p class="weld-hero__quote-text">This site is a work in progress (Jan, 26), check back soon for new updates :)</p>
+        <p class="weld-hero__quote-text">This site is a continual work in progress, check back soon for new updates :)</p>
       </blockquote>
     </div>
 
